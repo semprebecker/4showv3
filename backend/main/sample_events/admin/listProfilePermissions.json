@@ -1,0 +1,9 @@
+{
+  "body": {
+    "action":"listProfilePermissions",
+    "idPerfil": 1
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJlNjY1NmI4OS00ODAzLTQ1ODgtYWVhYy1iMmYzOTRhMWEzYzgiLCJpYXQiOjE2NTY1MTc3OTEsImV4cCI6MTY1NjUzNTc5MX0.IteFG3ueyZgwL9vNsfQBbJjRKCbBXd761LH9CTxpaZo"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "body": {
+    "action":"updateUser",
+    "user": {
+      "nome": "teste local sam",
+      "email": "thomas@paipe.co",
+      "tipoPessoa": "juridica",
+      "cpfCnpj": "111111",
+      "telefone": "22222"
+    }
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJmY2ZlZTA1YS04ZDBmLTQ3YzUtOTFkMC0xOGVlNTM0OWRlYmMiLCJpYXQiOjE2NTU4MjA0NTMsImV4cCI6MTY1NTgzODQ1M30.ym0od1tDAT1AleYOWGnDK5sD00i7huiDY6C6AWpjLio"
+  }
+}

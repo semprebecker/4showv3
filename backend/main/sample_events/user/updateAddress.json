@@ -1,0 +1,20 @@
+{
+  "body": {
+    "action":"updateAddress",
+    "address": {
+      "idEndereco": 9,
+      "nome": "teste sam 1111",
+      "logradouro": "teste sam 111",
+      "numero": 22,
+      "cep": "cep",
+      "bairro": "teste sam 11",
+      "cidade": "teste sam 11",
+      "complemento": "teste sam 11",
+      "telefone": "fone",
+      "selecionado": false
+    }
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI2MmMzZmUwYS1iZWYyLTQ1MjQtYjNjMC1lMmZhNjZjYmM3ZGYiLCJpYXQiOjE2NTYwNzYyNTYsImV4cCI6MTY1NjA5NDI1Nn0.tg0Xgba11atJw_KlKk_vStMVpTWl3UAM08uqEZNHuNw"
+  }
+}

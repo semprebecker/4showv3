@@ -1,0 +1,7 @@
+{
+  "app-4show-stack-dev": {
+    "wsUrl": "wss://1htpaczsi4.execute-api.us-east-1.amazonaws.com/dev",
+    "webUrl": "d8fd7zzi872lv.cloudfront.net",
+    "Bastion4showdevBastionHostId576F7FE4": "i-04b512b3dc6948b8d"
+  }
+}

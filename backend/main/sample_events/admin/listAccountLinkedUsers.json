@@ -1,0 +1,9 @@
+{
+  "body": {
+    "action":"listAccountLinkedUsers",
+    "idConta": 5
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI0OGM3ZmVkYi1kODBjLTQ5ZmEtOTJmNS03OTdkYWFmYWJjODMiLCJpYXQiOjE2NTcwMzA4NDEsImV4cCI6MTY1NzA0ODg0MX0.sPe2hdehml7_hImnD3SrBDrGBrijHWY2F62gsHh8PRU"
+  }
+}

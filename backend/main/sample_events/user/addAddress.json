@@ -1,0 +1,18 @@
+{
+  "body": {
+    "action":"addAddress",
+    "address": {
+      "nome": "teste sam string",
+      "logradouro": "endereco",
+      "numero": 2,
+      "cep": "93805-762",
+      "bairro": "teste sam string",
+      "cidade": "teste sam string",
+      "telefone": "testesam",
+      "selecionado": false
+    }
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI5MzBiMDlhNy1lZDRjLTQyZjgtYWNmYi02MGUxMDhlOWExYzAiLCJpYXQiOjE2NTY2MDQ3NDQsImV4cCI6MTY1NjYyMjc0NH0.kxu4KgAqPqunTqFdZ1UnnyVVbEpxB_mD7nm7yoCkV-I"
+  }
+}

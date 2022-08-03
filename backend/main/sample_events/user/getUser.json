@@ -1,0 +1,8 @@
+{
+  "body": {
+    "action":"getUser"
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI0NDZlYjAzYi02MTllLTRjNGMtYjhhMi0wM2NjNzRhMGY0NTgiLCJpYXQiOjE2NTY5NDQzNTAsImV4cCI6MTY1Njk2MjM1MH0.2mPJKEwED_4f8RUHmLVX6qWO_iegl8024qJmE-Q7x_w"
+  }
+}

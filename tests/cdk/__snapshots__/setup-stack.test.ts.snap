@@ -1,0 +1,2267 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rest api rest api 1`] = `
+Object {
+  "Outputs": Object {
+    "Bastion4showdevBastionHostId576F7FE4": Object {
+      "Description": "Instance ID of the bastion host. Use this to connect via SSM Session Manager",
+      "Value": Object {
+        "Ref": "Bastion4showdevFCCB4240",
+      },
+    },
+    "webUrl": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "Distribution830FAC52",
+          "DomainName",
+        ],
+      },
+    },
+    "wsUrl": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            Object {
+              "Fn::GetAtt": Array [
+                "WebSocketApi4showDEVD00A8EAF",
+                "ApiEndpoint",
+              ],
+            },
+            "/dev",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": Any<Object>,
+  "Resources": Object {
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": Object {
+      "DependsOn": Array [
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AccessLogs8B620ECA": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Account": Object {
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CWRole7EC94C1E",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "AuroraServerless1D6F3053": Object {
+      "DeletionPolicy": "Snapshot",
+      "Properties": Object {
+        "DBClusterParameterGroupName": "default.aurora-postgresql10",
+        "DBSubnetGroupName": Object {
+          "Ref": "AuroraServerlessSubnetsE15BACD9",
+        },
+        "DatabaseName": "dev",
+        "EnableHttpEndpoint": true,
+        "Engine": "aurora-postgresql",
+        "EngineMode": "serverless",
+        "MasterUserPassword": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{{resolve:secretsmanager:",
+              Object {
+                "Ref": "Stack4showAuroraServerlessSecret0A7A9A6B3fdaad7efa858a3daf9490cf0a702aeb",
+              },
+              ":SecretString:password::}}",
+            ],
+          ],
+        },
+        "MasterUsername": "serverless",
+        "ScalingConfiguration": Object {
+          "AutoPause": false,
+        },
+        "StorageEncrypted": true,
+        "VpcSecurityGroupIds": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "AuroraServerlessSecurityGroupF548A982",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBCluster",
+      "UpdateReplacePolicy": "Snapshot",
+    },
+    "AuroraServerlessSecretAttachment2F9C7D0C": Object {
+      "Properties": Object {
+        "SecretId": Object {
+          "Ref": "Stack4showAuroraServerlessSecret0A7A9A6B3fdaad7efa858a3daf9490cf0a702aeb",
+        },
+        "TargetId": Object {
+          "Ref": "AuroraServerless1D6F3053",
+        },
+        "TargetType": "AWS::RDS::DBCluster",
+      },
+      "Type": "AWS::SecretsManager::SecretTargetAttachment",
+    },
+    "AuroraServerlessSecurityGroupF548A982": Object {
+      "Properties": Object {
+        "GroupDescription": "RDS security group",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "AuroraServerlessSecurityGroupfromStack4showBastion4showdevInstanceSecurityGroup53D5417FIndirectPort5EB65050": Object {
+      "Properties": Object {
+        "Description": "Bastion host connection",
+        "FromPort": Object {
+          "Fn::GetAtt": Array [
+            "AuroraServerless1D6F3053",
+            "Endpoint.Port",
+          ],
+        },
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "AuroraServerlessSecurityGroupF548A982",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "Bastion4showdevInstanceSecurityGroupA6EFB002",
+            "GroupId",
+          ],
+        },
+        "ToPort": Object {
+          "Fn::GetAtt": Array [
+            "AuroraServerless1D6F3053",
+            "Endpoint.Port",
+          ],
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "AuroraServerlessSubnetsE15BACD9": Object {
+      "Properties": Object {
+        "DBSubnetGroupDescription": "Subnets for Aurora-Serverless database",
+        "SubnetIds": Array [
+          Object {
+            "Ref": "Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2",
+          },
+          Object {
+            "Ref": "Stack4showVPCdevPrivateSubnet2SubnetE83F9285",
+          },
+          Object {
+            "Ref": "Stack4showVPCdevPrivateSubnet3Subnet95E9203E",
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBSubnetGroup",
+    },
+    "Authorizer": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "AuthorizerType": "REQUEST",
+        "AuthorizerUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "setupconnectionauthorizerFunctionE2E31CC5",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+        "Name": "WebSocketApiAuthorizer",
+      },
+      "Type": "AWS::ApiGatewayV2::Authorizer",
+    },
+    "Bastion4showdevFCCB4240": Object {
+      "DependsOn": Array [
+        "Bastion4showdevInstanceRoleDefaultPolicy1C167C0F",
+        "Bastion4showdevInstanceRole4432A549",
+      ],
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "IamInstanceProfile": Object {
+          "Ref": "Bastion4showdevInstanceProfile0697EEF5",
+        },
+        "ImageId": Object {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
+        "InstanceType": "t3.nano",
+        "SecurityGroupIds": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "Bastion4showdevInstanceSecurityGroupA6EFB002",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "bastion-host-4show-dev",
+          },
+        ],
+        "UserData": Object {
+          "Fn::Base64": "#!/bin/bash",
+        },
+      },
+      "Type": "AWS::EC2::Instance",
+    },
+    "Bastion4showdevInstanceProfile0697EEF5": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "Bastion4showdevInstanceRole4432A549",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "Bastion4showdevInstanceRole4432A549": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "bastion-host-4show-dev",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Bastion4showdevInstanceRoleDefaultPolicy1C167C0F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ssmmessages:*",
+                "ssm:UpdateInstanceInformation",
+                "ec2messages:*",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Bastion4showdevInstanceRoleDefaultPolicy1C167C0F",
+        "Roles": Array [
+          Object {
+            "Ref": "Bastion4showdevInstanceRole4432A549",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Bastion4showdevInstanceSecurityGroupA6EFB002": Object {
+      "Properties": Object {
+        "GroupDescription": "Stack4show/Bastion4showdev/Resource/InstanceSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "bastion-host-4show-dev",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "CWRole7EC94C1E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ConfigResource426122EF": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "ConfigResourceCustomResourcePolicy4FAE044F",
+      ],
+      "Properties": Object {
+        "Create": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{\\"action\\":\\"putObject\\",\\"parameters\\":{\\"Body\\":\\"{\\\\\\"socketUrl\\\\\\":\\\\\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "WebSocketApi4showDEVD00A8EAF",
+                  "ApiEndpoint",
+                ],
+              },
+              "\\\\\\",\\\\\\"stageName\\\\\\":\\\\\\"dev\\\\\\"}\\",\\"Bucket\\":\\"",
+              Object {
+                "Ref": "WebsiteBucket75C24D94",
+              },
+              "\\",\\"CacheControl\\":\\"max-age=0, no-cache, no-store, must-revalidate\\",\\"ContentType\\":\\"application/json\\",\\"Key\\":\\"config.json\\"},\\"physicalResourceId\\":{\\"id\\":\\"config\\"},\\"service\\":\\"S3\\"}",
+            ],
+          ],
+        },
+        "InstallLatestAwsSdk": true,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+        "Update": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{\\"action\\":\\"putObject\\",\\"parameters\\":{\\"Body\\":\\"{\\\\\\"socketUrl\\\\\\":\\\\\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "WebSocketApi4showDEVD00A8EAF",
+                  "ApiEndpoint",
+                ],
+              },
+              "\\\\\\",\\\\\\"stageName\\\\\\":\\\\\\"dev\\\\\\"}\\",\\"Bucket\\":\\"",
+              Object {
+                "Ref": "WebsiteBucket75C24D94",
+              },
+              "\\",\\"CacheControl\\":\\"max-age=0, no-cache, no-store, must-revalidate\\",\\"ContentType\\":\\"application/json\\",\\"Key\\":\\"config.json\\"},\\"physicalResourceId\\":{\\"id\\":\\"config\\"},\\"service\\":\\"S3\\"}",
+            ],
+          ],
+        },
+      },
+      "Type": "Custom::AWS",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ConfigResourceCustomResourcePolicy4FAE044F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "WebsiteBucket75C24D94",
+                        "Arn",
+                      ],
+                    },
+                    "/config.json",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ConfigResourceCustomResourcePolicy4FAE044F",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBB049752D": Object {
+      "DependsOn": Array [
+        "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D",
+        "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Handler": "index.handler",
+        "Layers": Array [
+          Object {
+            "Ref": "DeployWebsiteAwsCliLayer17DBC421",
+          },
+        ],
+        "MemorySize": 1024,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.7",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Any<Array>,
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D",
+        "Roles": Array [
+          Object {
+            "Ref": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": Object {
+      "DependsOn": Array [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Lambda function for auto-deleting objects in ",
+              Object {
+                "Ref": "WebsiteBucket75C24D94",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DEVStage3CF34D28": Object {
+      "Properties": Object {
+        "AccessLogSettings": Object {
+          "DestinationArn": Object {
+            "Fn::GetAtt": Array [
+              "AccessLogs8B620ECA",
+              "Arn",
+            ],
+          },
+          "Format": "$context.identity.sourceIp - - [$context.requestTime] \\"$context.httpMethod $context.routeKey $context.protocol\\" $context.status $context.responseLength $context.requestId",
+        },
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "AutoDeploy": true,
+        "DefaultRouteSettings": Object {
+          "DataTraceEnabled": true,
+          "LoggingLevel": "INFO",
+          "ThrottlingBurstLimit": 500,
+          "ThrottlingRateLimit": 1000,
+        },
+        "StageName": "dev",
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "DeployWebsiteAwsCliLayer17DBC421": Object {
+      "Properties": Object {
+        "Content": Object {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789-us-east-1",
+          "S3Key": "92c405c4551a308bcdd55823f8b16268bd3c38fd2a011edaaf3ed72a80f557c4.zip",
+        },
+        "Description": "/opt/awscli/aws",
+      },
+      "Type": "AWS::Lambda::LayerVersion",
+    },
+    "DeployWebsiteCustomResource1024MiBE7965B54": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "DestinationBucketName": Object {
+          "Ref": "WebsiteBucket75C24D94",
+        },
+        "DistributionId": Object {
+          "Ref": "Distribution830FAC52",
+        },
+        "Prune": false,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBB049752D",
+            "Arn",
+          ],
+        },
+        "SourceBucketNames": Any<Array>,
+        "SourceObjectKeys": Any<Object>,
+      },
+      "Type": "Custom::CDKBucketDeployment",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Distribution830FAC52": Object {
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "CustomErrorResponses": Array [
+            Object {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "TargetOriginId": "Stack4showDistributionOrigin15F16B0AB",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Origins": Array [
+            Object {
+              "DomainName": Object {
+                "Fn::GetAtt": Array [
+                  "WebsiteBucket75C24D94",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "Stack4showDistributionOrigin15F16B0AB",
+              "S3OriginConfig": Object {
+                "OriginAccessIdentity": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "origin-access-identity/cloudfront/",
+                      Object {
+                        "Ref": "OriginAccessIdentityDF1E3CAC",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "ExecutionLogs6FEE23C8": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "LogGroupName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "/aws/apigateway/",
+              Object {
+                "Ref": "WebSocketApi4showDEVD00A8EAF",
+              },
+              "/dev",
+            ],
+          ],
+        },
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GetStateModel": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "ContentType": "application/json",
+        "Name": "GetStateModel",
+        "Schema": Object {
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "properties": Object {
+            "action": Object {
+              "enum": Array [
+                "getState",
+              ],
+            },
+          },
+          "required": Array [
+            "action",
+          ],
+          "title": "GetStateSchema",
+          "type": "object",
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Model",
+    },
+    "OriginAccessIdentityDF1E3CAC": Object {
+      "Properties": Object {
+        "CloudFrontOriginAccessIdentityConfig": Object {
+          "Comment": "Allows CloudFront to reach the bucket",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "Stack4showAuroraServerlessSecret0A7A9A6B3fdaad7efa858a3daf9490cf0a702aeb": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Generated by the CDK for stack: ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+            ],
+          ],
+        },
+        "GenerateSecretString": Object {
+          "ExcludeCharacters": " %+~\`#$&*()|[]{}:;<>?!'/@\\"\\\\",
+          "GenerateStringKey": "password",
+          "PasswordLength": 30,
+          "SecretStringTemplate": "{\\"username\\":\\"serverless\\"}",
+        },
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Stack4showTableDEVE51EAC4A": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "pk",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "sk",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "pk",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "sk",
+            "KeyType": "RANGE",
+          },
+        ],
+        "TableName": "Stack4showTableDEV",
+        "TimeToLiveSpecification": Object {
+          "AttributeName": "exp",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Stack4showVPCdevB3350D88": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "Stack4showVPCdevIGW921FDFC2": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "Stack4showVPCdevPrivateSubnet1DefaultRoute703B12D1": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1NATGateway7B76FC98",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet1RouteTable338B39E6",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPrivateSubnet1RouteTable338B39E6": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPrivateSubnet1RouteTableAssociationD947205D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet1RouteTable338B39E6",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevPrivateSubnet2DefaultRouteB3E34412": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1NATGateway7B76FC98",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPrivateSubnet2RouteTableAssociation48E19415": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet2SubnetE83F9285",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPrivateSubnet2SubnetE83F9285": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevPrivateSubnet3DefaultRoute3515D1D6": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1NATGateway7B76FC98",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPrivateSubnet3RouteTableAssociation7397CD90": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPrivateSubnet3Subnet95E9203E",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPrivateSubnet3Subnet95E9203E": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevPublicSubnet1DefaultRoute6873F953": Object {
+      "DependsOn": Array [
+        "Stack4showVPCdevVPCGW61557925",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "Stack4showVPCdevIGW921FDFC2",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPublicSubnet1EIPC6092CA1": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "Stack4showVPCdevPublicSubnet1NATGateway7B76FC98": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "Stack4showVPCdevPublicSubnet1EIPC6092CA1",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1Subnet16805C75",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPublicSubnet1RouteTableAssociationE3048979": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet1Subnet16805C75",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPublicSubnet1Subnet16805C75": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevPublicSubnet2DefaultRoute6510D5DD": Object {
+      "DependsOn": Array [
+        "Stack4showVPCdevVPCGW61557925",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "Stack4showVPCdevIGW921FDFC2",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPublicSubnet2RouteTableAssociationEB7227BF": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet2SubnetF1D03DFA",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPublicSubnet2SubnetF1D03DFA": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevPublicSubnet3DefaultRouteF63FC35F": Object {
+      "DependsOn": Array [
+        "Stack4showVPCdevVPCGW61557925",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "Stack4showVPCdevIGW921FDFC2",
+        },
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet3RouteTableEBB3D228",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "Stack4showVPCdevPublicSubnet3RouteTableAssociationF4930C52": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet3RouteTableEBB3D228",
+        },
+        "SubnetId": Object {
+          "Ref": "Stack4showVPCdevPublicSubnet3Subnet5A14E65C",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "Stack4showVPCdevPublicSubnet3RouteTableEBB3D228": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "Stack4showVPCdevPublicSubnet3Subnet5A14E65C": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "Stack4show/Stack4showVPCdev/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "Stack4showVPCdevVPCGW61557925": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "Stack4showVPCdevIGW921FDFC2",
+        },
+        "VpcId": Object {
+          "Ref": "Stack4showVPCdevB3350D88",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "WebSocketApi4showDEVD00A8EAF": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "Name": "WebSocketApi4showDEV",
+        "ProtocolType": "WEBSOCKET",
+        "RouteSelectionExpression": "$request.body.action",
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "WebSocketApi4showDEVconnectRoute8E598343": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": Object {
+          "Ref": "Authorizer",
+        },
+        "RouteKey": "$connect",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "WebSocketApi4showDEVconnectRouteOnConnectIntegrationF47787F4",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApi4showDEVconnectRouteOnConnectIntegrationF47787F4": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "setupconnectiononConnectFunction1026145B",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApi4showDEVconnectRouteOnConnectIntegrationPermissionD73F152E": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiononConnectFunction1026145B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789:",
+              Object {
+                "Ref": "WebSocketApi4showDEVD00A8EAF",
+              },
+              "/*/*$connect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebSocketApi4showDEVdisconnectRouteF7E47E8F": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "RouteKey": "$disconnect",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationC465D215",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationC465D215": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "setupconnectiononDisconnectFunction6260FCA7",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationPermission1684DCDB": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiononDisconnectFunction6260FCA7",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789:",
+              Object {
+                "Ref": "WebSocketApi4showDEVD00A8EAF",
+              },
+              "/*/*$disconnect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebSocketApi4showDEVgetStateRouteB60A3BB2": Object {
+      "DependsOn": Array [
+        "Account",
+        "GetStateModel",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "ModelSelectionExpression": "$request.body.action",
+        "RequestModels": Object {
+          "getState": "GetStateModel",
+        },
+        "RouteKey": "getState",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "WebSocketApi4showDEVgetStateRoutegetStateIntegrationAFCF3A6B",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApi4showDEVgetStateRoutegetStateIntegrationAFCF3A6B": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi4showDEVD00A8EAF",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "setupconnectiongetStateFunction1D3A554F",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApi4showDEVgetStateRoutegetStateIntegrationPermission307899ED": Object {
+      "DependsOn": Array [
+        "Account",
+      ],
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiongetStateFunction1D3A554F",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789:",
+              Object {
+                "Ref": "WebSocketApi4showDEVD00A8EAF",
+              },
+              "/*/*getState",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebsiteBucket75C24D94": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+          Object {
+            "Key": "aws-cdk:cr-owned:2d7ef36b",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "WebsiteBucketAutoDeleteObjectsCustomResource8750E461": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "WebsiteBucketPolicyE10E3262",
+      ],
+      "Properties": Object {
+        "BucketName": Object {
+          "Ref": "WebsiteBucket75C24D94",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "WebsiteBucketPolicyE10E3262": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "WebsiteBucket75C24D94",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::GetAtt": Array [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "WebsiteBucket75C24D94",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "WebsiteBucket75C24D94",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "OriginAccessIdentityDF1E3CAC",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "WebsiteBucket75C24D94",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "WebsiteBucket75C24D94",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "OriginAccessIdentityDF1E3CAC",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "WebsiteBucket75C24D94",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "devF7B884FF": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Description": "Generated by the CDK for stack: 4show-stack-dev",
+        "GenerateSecretString": Object {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "setupconnectionauthorizerFunctionAuthZPermissionA7BA042B": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectionauthorizerFunctionE2E31CC5",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789:",
+              Object {
+                "Ref": "WebSocketApi4showDEVD00A8EAF",
+              },
+              "/authorizers/",
+              Object {
+                "Ref": "Authorizer",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "setupconnectionauthorizerFunctionE2E31CC5": Object {
+      "DependsOn": Array [
+        "setupconnectionauthorizerFunctionServiceRoleCD1EC894",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "secretsId": "devF7B884FF-75G7hosnKYhv",
+            "stage": "dev",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectionauthorizerFunctionServiceRoleCD1EC894",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "setupconnectionauthorizerFunctionServiceRoleCD1EC894": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "setupconnectiongetStateFunction1D3A554F": Object {
+      "DependsOn": Array [
+        "setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520",
+        "setupconnectiongetStateFunctionServiceRole7399EE77",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "secretsId": "devF7B884FF-75G7hosnKYhv",
+            "stage": "dev",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiongetStateFunctionServiceRole7399EE77",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "setupconnectiongetStateFunctionServiceRole7399EE77": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "execute-api:ManageConnections",
+                "cognito-idp:*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:aws:execute-api:undefined:undefined:",
+                      Object {
+                        "Ref": "WebSocketApi4showDEVD00A8EAF",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:aws:cognito-idp:undefined:undefined:",
+                      Object {
+                        "Ref": "usuariosdevA198FC9E",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "Stack4showTableDEVE51EAC4A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "devF7B884FF",
+              },
+            },
+            Object {
+              "Action": Array [
+                "rds-data:BatchExecuteStatement",
+                "rds-data:BeginTransaction",
+                "rds-data:CommitTransaction",
+                "rds-data:ExecuteStatement",
+                "rds-data:RollbackTransaction",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "AuroraServerlessSecretAttachment2F9C7D0C",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520",
+        "Roles": Array [
+          Object {
+            "Ref": "setupconnectiongetStateFunctionServiceRole7399EE77",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "setupconnectiononConnectFunction1026145B": Object {
+      "DependsOn": Array [
+        "setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC",
+        "setupconnectiononConnectFunctionServiceRole5F640ED8",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "secretsId": "devF7B884FF-75G7hosnKYhv",
+            "stage": "dev",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiononConnectFunctionServiceRole5F640ED8",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "setupconnectiononConnectFunctionServiceRole5F640ED8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "Stack4showTableDEVE51EAC4A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "devF7B884FF",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC",
+        "Roles": Array [
+          Object {
+            "Ref": "setupconnectiononConnectFunctionServiceRole5F640ED8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "setupconnectiononDisconnectFunction6260FCA7": Object {
+      "DependsOn": Array [
+        "setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560",
+        "setupconnectiononDisconnectFunctionServiceRoleA17A7E4A",
+      ],
+      "Properties": Object {
+        "Code": Any<Object>,
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "secretsId": "devF7B884FF-75G7hosnKYhv",
+            "stage": "dev",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "setupconnectiononDisconnectFunctionServiceRoleA17A7E4A",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "setupconnectiononDisconnectFunctionServiceRoleA17A7E4A": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "Stack4showTableDEVE51EAC4A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "devF7B884FF",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560",
+        "Roles": Array [
+          Object {
+            "Ref": "setupconnectiononDisconnectFunctionServiceRoleA17A7E4A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "usuariosdevA198FC9E": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AccountRecoverySetting": Object {
+          "RecoveryMechanisms": Array [
+            Object {
+              "Name": "verified_email",
+              "Priority": 1,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": Object {
+          "AllowAdminCreateUserOnly": false,
+        },
+        "AliasAttributes": Array [
+          "email",
+        ],
+        "AutoVerifiedAttributes": Array [
+          "email",
+        ],
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "Policies": Object {
+          "PasswordPolicy": Object {
+            "MinimumLength": 8,
+            "RequireLowercase": true,
+            "RequireNumbers": true,
+            "RequireSymbols": true,
+            "RequireUppercase": true,
+          },
+        },
+        "Schema": Array [
+          Object {
+            "Mutable": true,
+            "Name": "preferred_username",
+            "Required": true,
+          },
+          Object {
+            "Mutable": true,
+            "Name": "email",
+            "Required": true,
+          },
+        ],
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "UserPoolName": "USUARIOS",
+        "VerificationMessageTemplate": Object {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

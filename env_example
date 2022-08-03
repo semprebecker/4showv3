@@ -1,0 +1,5 @@
+#enviroment
+ENV=dev|hml|prod
+
+#secrets manager id
+SECRET_ID=xxx

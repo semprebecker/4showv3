@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo
+if [ -e .commit ]
+    then
+    rm .commit
+    git add template.yaml
+    git commit --amend -C HEAD --no-verify
+fi
+exit

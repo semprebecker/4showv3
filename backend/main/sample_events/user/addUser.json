@@ -1,0 +1,12 @@
+{
+  "body": {
+    "action":"addUser",
+    "user": {
+      "nome": "pages ravel5",
+      "email": "ravel.pages5@paipe.co",
+      "tipoPessoa": "fisico",
+      "cpfCnpj": "25349252020",
+      "telefone": "12123123166"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "body": {
+    "action":"countPagesUsers",
+    "limit": 2
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJlYjgwMjQ1NS1mMTJiLTRkMjktOTM3OS1mOWM5MmM1ZmFhMDEiLCJpYXQiOjE2NTg0MjQ3MTIsImV4cCI6MTY1ODQ0MjcxMn0.qBKnpDjWLBmSfgd5qKduXpV5w2R2LeS3KGyC8Mi4fgw"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "body": {
+    "action":"getAddresses"
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI2MmMzZmUwYS1iZWYyLTQ1MjQtYjNjMC1lMmZhNjZjYmM3ZGYiLCJpYXQiOjE2NTYwNzYyNTYsImV4cCI6MTY1NjA5NDI1Nn0.tg0Xgba11atJw_KlKk_vStMVpTWl3UAM08uqEZNHuNw"
+  }
+}

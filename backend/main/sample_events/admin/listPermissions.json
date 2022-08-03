@@ -1,0 +1,9 @@
+{
+  "body": {
+    "action":"listPermissions",
+    "filter": { "nome": "ALTERAR_PERFIL_USUARIO" }
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI1NGQzNjAzMC1jM2UwLTRmMTQtOTczMi0wOTEzZTEzMmIxODIiLCJpYXQiOjE2NTY0MjE2MzIsImV4cCI6MTY1NjQzOTYzMn0.Bi7bJeZYNgE16ANXhD7txioY3QjLXZ1cTcGuS_5jaS0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "body": {
+    "action":"listAccounts",
+    "filter": {
+      "cpfCnpj": "02273211031"
+    },
+    "pagination": {
+      "page": 1,
+      "limit": 2
+    }
+  },
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJhZTQyMzY4MS0xMDY0LTQyOWItODkwZi1jMzUxNWE3MzcyYWQiLCJpYXQiOjE2NTY2OTE4NTcsImV4cCI6MTY1NjcwOTg1N30.8fKQ4fxmkYIN4yeb0mTX0ZhpF6dmdNdMY2LQzwGtTzU"
+  }
+}

@@ -1,0 +1,4789 @@
+Description: 4show Stack DEV
+Resources:
+  setupconnectionauthorizerFunctionServiceRoleCD1EC894:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--authorizerFunction/ServiceRole/Resource
+  setupconnectionauthorizerFunctionE2E31CC5:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 2cc25a39d44192700328498fed6b2956539c5e40f4d9aabb04c2a003f38c77c1.zip
+      Role:
+        Fn::GetAtt:
+          - setupconnectionauthorizerFunctionServiceRoleCD1EC894
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - setupconnectionauthorizerFunctionServiceRoleCD1EC894
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--authorizerFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.2cc25a39d44192700328498fed6b2956539c5e40f4d9aabb04c2a003f38c77c1
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  setupconnectionauthorizerFunctionAuthZPermissionA7BA042B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - setupconnectionauthorizerFunctionE2E31CC5
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /authorizers/
+            - Ref: Authorizer
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--authorizerFunction/AuthZPermission
+  setupconnectiongetStateFunctionServiceRole7399EE77:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--getStateFunction/ServiceRole/Resource
+  setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: cognito-idp:*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - arn:aws:cognito-idp:us-east-1:370579816997:userpool/
+                  - Ref: UsersdevE04C3B3C
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:Query
+              - dynamodb:GetItem
+              - dynamodb:Scan
+              - dynamodb:ConditionCheckItem
+              - dynamodb:BatchWriteItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - Stack4showTableDEVE51EAC4A
+                  - Arn
+              - Ref: AWS::NoValue
+          - Action:
+              - secretsmanager:PutSecretValue
+              - secretsmanager:UpdateSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520
+      Roles:
+        - Ref: setupconnectiongetStateFunctionServiceRole7399EE77
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--getStateFunction/ServiceRole/DefaultPolicy/Resource
+  setupconnectiongetStateFunction1D3A554F:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 4e0e4a54bab2ed4c41ef88edf143bb679bebcaa423c24fb822f3527cd551c7ca.zip
+      Role:
+        Fn::GetAtt:
+          - setupconnectiongetStateFunctionServiceRole7399EE77
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - setupconnectiongetStateFunctionServiceRoleDefaultPolicyA2443520
+      - setupconnectiongetStateFunctionServiceRole7399EE77
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--getStateFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.4e0e4a54bab2ed4c41ef88edf143bb679bebcaa423c24fb822f3527cd551c7ca
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  setupconnectiononConnectFunctionServiceRole5F640ED8:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onConnectFunction/ServiceRole/Resource
+  setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchWriteItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - Stack4showTableDEVE51EAC4A
+                  - Arn
+              - Ref: AWS::NoValue
+          - Action:
+              - secretsmanager:PutSecretValue
+              - secretsmanager:UpdateSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+        Version: "2012-10-17"
+      PolicyName: setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC
+      Roles:
+        - Ref: setupconnectiononConnectFunctionServiceRole5F640ED8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onConnectFunction/ServiceRole/DefaultPolicy/Resource
+  setupconnectiononConnectFunction1026145B:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 0ad9a848b98fbd28667f528e50d656d8a0e2348d277ede5bddad75de843ecf61.zip
+      Role:
+        Fn::GetAtt:
+          - setupconnectiononConnectFunctionServiceRole5F640ED8
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - setupconnectiononConnectFunctionServiceRoleDefaultPolicy85F08DEC
+      - setupconnectiononConnectFunctionServiceRole5F640ED8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onConnectFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.0ad9a848b98fbd28667f528e50d656d8a0e2348d277ede5bddad75de843ecf61
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  setupconnectiononDisconnectFunctionServiceRoleA17A7E4A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onDisconnectFunction/ServiceRole/Resource
+  setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchWriteItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - Stack4showTableDEVE51EAC4A
+                  - Arn
+              - Ref: AWS::NoValue
+          - Action:
+              - secretsmanager:PutSecretValue
+              - secretsmanager:UpdateSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+        Version: "2012-10-17"
+      PolicyName: setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560
+      Roles:
+        - Ref: setupconnectiononDisconnectFunctionServiceRoleA17A7E4A
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onDisconnectFunction/ServiceRole/DefaultPolicy/Resource
+  setupconnectiononDisconnectFunction6260FCA7:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 18a59a05fa0ffc169826af12e7ba00180a3f0db940610fe54cc267f280244447.zip
+      Role:
+        Fn::GetAtt:
+          - setupconnectiononDisconnectFunctionServiceRoleA17A7E4A
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - setupconnectiononDisconnectFunctionServiceRoleDefaultPolicy4F5D7560
+      - setupconnectiononDisconnectFunctionServiceRoleA17A7E4A
+    Metadata:
+      aws:cdk:path: 4showStackDEV/setup-connection--onDisconnectFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.18a59a05fa0ffc169826af12e7ba00180a3f0db940610fe54cc267f280244447
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  useraddUserFunctionServiceRole45BC6D55:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addUserFunction/ServiceRole/Resource
+  useraddUserFunctionServiceRoleDefaultPolicyF8B17205:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: cognito-idp:*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - arn:aws:cognito-idp:us-east-1:370579816997:userpool/
+                  - Ref: UsersdevE04C3B3C
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: useraddUserFunctionServiceRoleDefaultPolicyF8B17205
+      Roles:
+        - Ref: useraddUserFunctionServiceRole45BC6D55
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addUserFunction/ServiceRole/DefaultPolicy/Resource
+  useraddUserFunction4AD4C829:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: ef1876f9ce67612dc0a45fa3f0618cbc64259267c752244c310f1522d5d55463.zip
+      Role:
+        Fn::GetAtt:
+          - useraddUserFunctionServiceRole45BC6D55
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - useraddUserFunctionServiceRoleDefaultPolicyF8B17205
+      - useraddUserFunctionServiceRole45BC6D55
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addUserFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.ef1876f9ce67612dc0a45fa3f0618cbc64259267c752244c310f1522d5d55463
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  userupdateUserFunctionServiceRoleCE98E357:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateUserFunction/ServiceRole/Resource
+  userupdateUserFunctionServiceRoleDefaultPolicy5EE415A0:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: userupdateUserFunctionServiceRoleDefaultPolicy5EE415A0
+      Roles:
+        - Ref: userupdateUserFunctionServiceRoleCE98E357
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateUserFunction/ServiceRole/DefaultPolicy/Resource
+  userupdateUserFunction28537107:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 039a8e40b543cd65a297b5bb54f8048995b93746fc7c419c174b8c5d6e8365c0.zip
+      Role:
+        Fn::GetAtt:
+          - userupdateUserFunctionServiceRoleCE98E357
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - userupdateUserFunctionServiceRoleDefaultPolicy5EE415A0
+      - userupdateUserFunctionServiceRoleCE98E357
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateUserFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.039a8e40b543cd65a297b5bb54f8048995b93746fc7c419c174b8c5d6e8365c0
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  usergetUserFunctionServiceRole9D584E20:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getUserFunction/ServiceRole/Resource
+  usergetUserFunctionServiceRoleDefaultPolicyBB35C05A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: usergetUserFunctionServiceRoleDefaultPolicyBB35C05A
+      Roles:
+        - Ref: usergetUserFunctionServiceRole9D584E20
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getUserFunction/ServiceRole/DefaultPolicy/Resource
+  usergetUserFunction56EA507D:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: c96142c5eda2ed8851c2dfc9ee850a627f138d8d38326f57008380dc7b1a2648.zip
+      Role:
+        Fn::GetAtt:
+          - usergetUserFunctionServiceRole9D584E20
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - usergetUserFunctionServiceRoleDefaultPolicyBB35C05A
+      - usergetUserFunctionServiceRole9D584E20
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getUserFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.c96142c5eda2ed8851c2dfc9ee850a627f138d8d38326f57008380dc7b1a2648
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  useraddAddressFunctionServiceRole79BF9EE2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addAddressFunction/ServiceRole/Resource
+  useraddAddressFunctionServiceRoleDefaultPolicy42BD6369:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: useraddAddressFunctionServiceRoleDefaultPolicy42BD6369
+      Roles:
+        - Ref: useraddAddressFunctionServiceRole79BF9EE2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addAddressFunction/ServiceRole/DefaultPolicy/Resource
+  useraddAddressFunction0990823E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: b0d0dbf8ed4ce9ec1e9dcb28843cb53989c2682a72d70ce13688aa99dc557f87.zip
+      Role:
+        Fn::GetAtt:
+          - useraddAddressFunctionServiceRole79BF9EE2
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - useraddAddressFunctionServiceRoleDefaultPolicy42BD6369
+      - useraddAddressFunctionServiceRole79BF9EE2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--addAddressFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.b0d0dbf8ed4ce9ec1e9dcb28843cb53989c2682a72d70ce13688aa99dc557f87
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  userupdateAddressFunctionServiceRole10512500:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateAddressFunction/ServiceRole/Resource
+  userupdateAddressFunctionServiceRoleDefaultPolicy20742229:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: userupdateAddressFunctionServiceRoleDefaultPolicy20742229
+      Roles:
+        - Ref: userupdateAddressFunctionServiceRole10512500
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateAddressFunction/ServiceRole/DefaultPolicy/Resource
+  userupdateAddressFunctionA24FE060:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 1c7170cdfb0212f4d566d21e838e99881ffb3634b40c91d2640fc37dc53ebfdb.zip
+      Role:
+        Fn::GetAtt:
+          - userupdateAddressFunctionServiceRole10512500
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - userupdateAddressFunctionServiceRoleDefaultPolicy20742229
+      - userupdateAddressFunctionServiceRole10512500
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--updateAddressFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.1c7170cdfb0212f4d566d21e838e99881ffb3634b40c91d2640fc37dc53ebfdb
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  usergetAddressesFunctionServiceRoleF598BB52:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getAddressesFunction/ServiceRole/Resource
+  usergetAddressesFunctionServiceRoleDefaultPolicyFB9C4A07:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: usergetAddressesFunctionServiceRoleDefaultPolicyFB9C4A07
+      Roles:
+        - Ref: usergetAddressesFunctionServiceRoleF598BB52
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getAddressesFunction/ServiceRole/DefaultPolicy/Resource
+  usergetAddressesFunctionE9EFF721:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 0a0b600e20248e9cfa12d9cfb2d68ab67144374f80c7d175e2a585ac692dcf78.zip
+      Role:
+        Fn::GetAtt:
+          - usergetAddressesFunctionServiceRoleF598BB52
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - usergetAddressesFunctionServiceRoleDefaultPolicyFB9C4A07
+      - usergetAddressesFunctionServiceRoleF598BB52
+    Metadata:
+      aws:cdk:path: 4showStackDEV/user--getAddressesFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.0a0b600e20248e9cfa12d9cfb2d68ab67144374f80c7d175e2a585ac692dcf78
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminlistProfilesFunctionServiceRole794EFC4B:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilesFunction/ServiceRole/Resource
+  adminlistProfilesFunctionServiceRoleDefaultPolicy4B9C3212:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminlistProfilesFunctionServiceRoleDefaultPolicy4B9C3212
+      Roles:
+        - Ref: adminlistProfilesFunctionServiceRole794EFC4B
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilesFunction/ServiceRole/DefaultPolicy/Resource
+  adminlistProfilesFunction66407277:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 2aa6fea6df3f260c07b9f788919995dc793a2be7e9894b19409305aa16eb4e34.zip
+      Role:
+        Fn::GetAtt:
+          - adminlistProfilesFunctionServiceRole794EFC4B
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminlistProfilesFunctionServiceRoleDefaultPolicy4B9C3212
+      - adminlistProfilesFunctionServiceRole794EFC4B
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilesFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.2aa6fea6df3f260c07b9f788919995dc793a2be7e9894b19409305aa16eb4e34
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminlistPermissionsFunctionServiceRoleBD4B8E53:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listPermissionsFunction/ServiceRole/Resource
+  adminlistPermissionsFunctionServiceRoleDefaultPolicy3D489379:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminlistPermissionsFunctionServiceRoleDefaultPolicy3D489379
+      Roles:
+        - Ref: adminlistPermissionsFunctionServiceRoleBD4B8E53
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listPermissionsFunction/ServiceRole/DefaultPolicy/Resource
+  adminlistPermissionsFunction287CBE36:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: f9e8cde236a3827455e4c72fcae2f2af28b885bb763c8cbf8d5486edffa336c5.zip
+      Role:
+        Fn::GetAtt:
+          - adminlistPermissionsFunctionServiceRoleBD4B8E53
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminlistPermissionsFunctionServiceRoleDefaultPolicy3D489379
+      - adminlistPermissionsFunctionServiceRoleBD4B8E53
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listPermissionsFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.f9e8cde236a3827455e4c72fcae2f2af28b885bb763c8cbf8d5486edffa336c5
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminmanageProfilePermissionsFunctionServiceRoleB17D127E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageProfilePermissionsFunction/ServiceRole/Resource
+  adminmanageProfilePermissionsFunctionServiceRoleDefaultPolicy09ABC5E3:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminmanageProfilePermissionsFunctionServiceRoleDefaultPolicy09ABC5E3
+      Roles:
+        - Ref: adminmanageProfilePermissionsFunctionServiceRoleB17D127E
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageProfilePermissionsFunction/ServiceRole/DefaultPolicy/Resource
+  adminmanageProfilePermissionsFunction53E6E4C6:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: ac368e9b3b1591fa6f2381063159f1c964360b91bf8610f5a12d2533f9dbfcda.zip
+      Role:
+        Fn::GetAtt:
+          - adminmanageProfilePermissionsFunctionServiceRoleB17D127E
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminmanageProfilePermissionsFunctionServiceRoleDefaultPolicy09ABC5E3
+      - adminmanageProfilePermissionsFunctionServiceRoleB17D127E
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageProfilePermissionsFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.ac368e9b3b1591fa6f2381063159f1c964360b91bf8610f5a12d2533f9dbfcda
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminlistProfilePermissionsFunctionServiceRoleCC0C9147:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilePermissionsFunction/ServiceRole/Resource
+  adminlistProfilePermissionsFunctionServiceRoleDefaultPolicyC431F2C1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminlistProfilePermissionsFunctionServiceRoleDefaultPolicyC431F2C1
+      Roles:
+        - Ref: adminlistProfilePermissionsFunctionServiceRoleCC0C9147
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilePermissionsFunction/ServiceRole/DefaultPolicy/Resource
+  adminlistProfilePermissionsFunctionB9353F88:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 02f39ec24e86f769228e0081a33976766aa13635d5a35cead6b1e56f75122a11.zip
+      Role:
+        Fn::GetAtt:
+          - adminlistProfilePermissionsFunctionServiceRoleCC0C9147
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminlistProfilePermissionsFunctionServiceRoleDefaultPolicyC431F2C1
+      - adminlistProfilePermissionsFunctionServiceRoleCC0C9147
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listProfilePermissionsFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.02f39ec24e86f769228e0081a33976766aa13635d5a35cead6b1e56f75122a11
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminaddAccountFunctionServiceRole50D9230F:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--addAccountFunction/ServiceRole/Resource
+  adminaddAccountFunctionServiceRoleDefaultPolicyCD5F7DD1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminaddAccountFunctionServiceRoleDefaultPolicyCD5F7DD1
+      Roles:
+        - Ref: adminaddAccountFunctionServiceRole50D9230F
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--addAccountFunction/ServiceRole/DefaultPolicy/Resource
+  adminaddAccountFunctionA17F5D03:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 3a7ae0221fb0a4d414f286ff0c64a72b27ae82e5c58c6eee46954afdaa3c7e3e.zip
+      Role:
+        Fn::GetAtt:
+          - adminaddAccountFunctionServiceRole50D9230F
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminaddAccountFunctionServiceRoleDefaultPolicyCD5F7DD1
+      - adminaddAccountFunctionServiceRole50D9230F
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--addAccountFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.3a7ae0221fb0a4d414f286ff0c64a72b27ae82e5c58c6eee46954afdaa3c7e3e
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminupdateAccountFunctionServiceRole74F9A579:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--updateAccountFunction/ServiceRole/Resource
+  adminupdateAccountFunctionServiceRoleDefaultPolicy5B903E41:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminupdateAccountFunctionServiceRoleDefaultPolicy5B903E41
+      Roles:
+        - Ref: adminupdateAccountFunctionServiceRole74F9A579
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--updateAccountFunction/ServiceRole/DefaultPolicy/Resource
+  adminupdateAccountFunctionC5ED0F5C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 930bccfe6dcd1811f42afd881881e9c416a8629a05af7f84095c7de94c1c3270.zip
+      Role:
+        Fn::GetAtt:
+          - adminupdateAccountFunctionServiceRole74F9A579
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminupdateAccountFunctionServiceRoleDefaultPolicy5B903E41
+      - adminupdateAccountFunctionServiceRole74F9A579
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--updateAccountFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.930bccfe6dcd1811f42afd881881e9c416a8629a05af7f84095c7de94c1c3270
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  admindeleteAccountFunctionServiceRoleF9B98F9A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--deleteAccountFunction/ServiceRole/Resource
+  admindeleteAccountFunctionServiceRoleDefaultPolicy152E52DE:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: admindeleteAccountFunctionServiceRoleDefaultPolicy152E52DE
+      Roles:
+        - Ref: admindeleteAccountFunctionServiceRoleF9B98F9A
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--deleteAccountFunction/ServiceRole/DefaultPolicy/Resource
+  admindeleteAccountFunctionE9A5F4DE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 09b900ba279e3841391603e8188ed0d449f43186874c01dca578fd0478bdc037.zip
+      Role:
+        Fn::GetAtt:
+          - admindeleteAccountFunctionServiceRoleF9B98F9A
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - admindeleteAccountFunctionServiceRoleDefaultPolicy152E52DE
+      - admindeleteAccountFunctionServiceRoleF9B98F9A
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--deleteAccountFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.09b900ba279e3841391603e8188ed0d449f43186874c01dca578fd0478bdc037
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminlistAccountsFunctionServiceRoleC23DEBE8:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountsFunction/ServiceRole/Resource
+  adminlistAccountsFunctionServiceRoleDefaultPolicyB7B3AF1A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminlistAccountsFunctionServiceRoleDefaultPolicyB7B3AF1A
+      Roles:
+        - Ref: adminlistAccountsFunctionServiceRoleC23DEBE8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountsFunction/ServiceRole/DefaultPolicy/Resource
+  adminlistAccountsFunction471076D8:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 268233f8f17dd7d02c6bc3ba160fc7dbf1c0539f5e468a94c603f1c2c81411fd.zip
+      Role:
+        Fn::GetAtt:
+          - adminlistAccountsFunctionServiceRoleC23DEBE8
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminlistAccountsFunctionServiceRoleDefaultPolicyB7B3AF1A
+      - adminlistAccountsFunctionServiceRoleC23DEBE8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountsFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.268233f8f17dd7d02c6bc3ba160fc7dbf1c0539f5e468a94c603f1c2c81411fd
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  admincountPagesAccountsFunctionServiceRoleAC8D2C44:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesAccountsFunction/ServiceRole/Resource
+  admincountPagesAccountsFunctionServiceRoleDefaultPolicy4DAACE4D:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: admincountPagesAccountsFunctionServiceRoleDefaultPolicy4DAACE4D
+      Roles:
+        - Ref: admincountPagesAccountsFunctionServiceRoleAC8D2C44
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesAccountsFunction/ServiceRole/DefaultPolicy/Resource
+  admincountPagesAccountsFunction74AAA275:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 1d4c1c6ae3834b7a75586ca843f78711ee49c97efe4a0f8f29e0a7eb4317afe0.zip
+      Role:
+        Fn::GetAtt:
+          - admincountPagesAccountsFunctionServiceRoleAC8D2C44
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - admincountPagesAccountsFunctionServiceRoleDefaultPolicy4DAACE4D
+      - admincountPagesAccountsFunctionServiceRoleAC8D2C44
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesAccountsFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.1d4c1c6ae3834b7a75586ca843f78711ee49c97efe4a0f8f29e0a7eb4317afe0
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminmanageAccountLinkedUsersFunctionServiceRole425659AC:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageAccountLinkedUsersFunction/ServiceRole/Resource
+  adminmanageAccountLinkedUsersFunctionServiceRoleDefaultPolicyC773F86A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminmanageAccountLinkedUsersFunctionServiceRoleDefaultPolicyC773F86A
+      Roles:
+        - Ref: adminmanageAccountLinkedUsersFunctionServiceRole425659AC
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageAccountLinkedUsersFunction/ServiceRole/DefaultPolicy/Resource
+  adminmanageAccountLinkedUsersFunctionE99156FF:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 92e00e22eb75087b4cebe5570ff72f7f01ce7368fe4f265c1bad368fd407d235.zip
+      Role:
+        Fn::GetAtt:
+          - adminmanageAccountLinkedUsersFunctionServiceRole425659AC
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminmanageAccountLinkedUsersFunctionServiceRoleDefaultPolicyC773F86A
+      - adminmanageAccountLinkedUsersFunctionServiceRole425659AC
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--manageAccountLinkedUsersFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.92e00e22eb75087b4cebe5570ff72f7f01ce7368fe4f265c1bad368fd407d235
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  adminlistAccountLinkedUsersFunctionServiceRoleAFAA24C4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountLinkedUsersFunction/ServiceRole/Resource
+  adminlistAccountLinkedUsersFunctionServiceRoleDefaultPolicyCE6C700F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: adminlistAccountLinkedUsersFunctionServiceRoleDefaultPolicyCE6C700F
+      Roles:
+        - Ref: adminlistAccountLinkedUsersFunctionServiceRoleAFAA24C4
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountLinkedUsersFunction/ServiceRole/DefaultPolicy/Resource
+  adminlistAccountLinkedUsersFunctionF5D69ABB:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 63894b0bc2ed3e2720f8ac7e16e0caf704a1e262d251714fdee645445a0ee076.zip
+      Role:
+        Fn::GetAtt:
+          - adminlistAccountLinkedUsersFunctionServiceRoleAFAA24C4
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - adminlistAccountLinkedUsersFunctionServiceRoleDefaultPolicyCE6C700F
+      - adminlistAccountLinkedUsersFunctionServiceRoleAFAA24C4
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--listAccountLinkedUsersFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.63894b0bc2ed3e2720f8ac7e16e0caf704a1e262d251714fdee645445a0ee076
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  admincountPagesUsersFunctionServiceRole3F915CFF:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesUsersFunction/ServiceRole/Resource
+  admincountPagesUsersFunctionServiceRoleDefaultPolicy1CAC52AE:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: execute-api:ManageConnections
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:execute-api:us-east-1:370579816997:"
+                  - Ref: WebSocketApi4showDEVD00A8EAF
+                  - /*
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: devF7B884FF
+          - Action:
+              - rds-data:BatchExecuteStatement
+              - rds-data:BeginTransaction
+              - rds-data:CommitTransaction
+              - rds-data:ExecuteStatement
+              - rds-data:RollbackTransaction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuroraServerlessSecretAttachment2F9C7D0C
+        Version: "2012-10-17"
+      PolicyName: admincountPagesUsersFunctionServiceRoleDefaultPolicy1CAC52AE
+      Roles:
+        - Ref: admincountPagesUsersFunctionServiceRole3F915CFF
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesUsersFunction/ServiceRole/DefaultPolicy/Resource
+  admincountPagesUsersFunctionBEC62427:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: a0f5c1546b74f6eb98dbf1f9536e4bf9f8c3d942d8d8136efd8ca6674117656e.zip
+      Role:
+        Fn::GetAtt:
+          - admincountPagesUsersFunctionServiceRole3F915CFF
+          - Arn
+      Environment:
+        Variables:
+          stage: dev
+          secretsId: devF7B884FF-02mKdHKxVL3Q
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Timeout: 60
+    DependsOn:
+      - admincountPagesUsersFunctionServiceRoleDefaultPolicy1CAC52AE
+      - admincountPagesUsersFunctionServiceRole3F915CFF
+    Metadata:
+      aws:cdk:path: 4showStackDEV/admin--countPagesUsersFunction/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\cdk.out\asset.a0f5c1546b74f6eb98dbf1f9536e4bf9f8c3d942d8d8136efd8ca6674117656e
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  UsersdevE04C3B3C:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: The verification code to your new account is {####}
+      EmailVerificationSubject: Verify your new account
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+      Schema:
+        - Mutable: true
+          Name: preferred_username
+          Required: true
+        - Mutable: true
+          Name: email
+          Required: true
+      SmsVerificationMessage: The verification code to your new account is {####}
+      UsernameAttributes:
+        - email
+      UserPoolName: usuariosdev4show
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: The verification code to your new account is {####}
+        EmailSubject: Verify your new account
+        SmsMessage: The verification code to your new account is {####}
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Usersdev/Resource
+  WebSocketApi4showDEVD00A8EAF:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: WebSocketApi4showDEV
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: $request.body.action
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/Resource
+  WebSocketApi4showDEVconnectRouteOnConnectIntegrationPermissionD73F152E:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - setupconnectiononConnectFunction1026145B
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*$connect
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$connect-Route/OnConnectIntegration-Permission
+  WebSocketApi4showDEVconnectRouteOnConnectIntegrationF47787F4:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - setupconnectiononConnectFunction1026145B
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$connect-Route/OnConnectIntegration/Resource
+  WebSocketApi4showDEVconnectRoute8E598343:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: $connect
+      AuthorizationType: CUSTOM
+      AuthorizerId:
+        Ref: Authorizer
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVconnectRouteOnConnectIntegrationF47787F4
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$connect-Route/Resource
+  WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationPermission1684DCDB:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - setupconnectiononDisconnectFunction6260FCA7
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*$disconnect
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$disconnect-Route/OnDisconnectIntegration-Permission
+  WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationC465D215:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - setupconnectiononDisconnectFunction6260FCA7
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$disconnect-Route/OnDisconnectIntegration/Resource
+  WebSocketApi4showDEVdisconnectRouteF7E47E8F:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: $disconnect
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVdisconnectRouteOnDisconnectIntegrationC465D215
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/$disconnect-Route/Resource
+  WebSocketApi4showDEVgetStateRoutegetStateIntegrationPermission307899ED:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - setupconnectiongetStateFunction1D3A554F
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*getState
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getState-Route/getStateIntegration-Permission
+  WebSocketApi4showDEVgetStateRoutegetStateIntegrationAFCF3A6B:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - setupconnectiongetStateFunction1D3A554F
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getState-Route/getStateIntegration/Resource
+  WebSocketApi4showDEVgetStateRouteB60A3BB2:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: getState
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        getState: GetStateModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVgetStateRoutegetStateIntegrationAFCF3A6B
+    DependsOn:
+      - Account
+      - GetStateModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getState-Route/Resource
+  WebSocketApi4showDEVaddUserRouteaddUserIntegrationPermission6A2C4340:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - useraddUserFunction4AD4C829
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*addUser
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addUser-Route/addUserIntegration-Permission
+  WebSocketApi4showDEVaddUserRouteaddUserIntegration5F379D94:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - useraddUserFunction4AD4C829
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addUser-Route/addUserIntegration/Resource
+  WebSocketApi4showDEVaddUserRouteF7E46566:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: addUser
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        addUser: addUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVaddUserRouteaddUserIntegration5F379D94
+    DependsOn:
+      - Account
+      - addUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addUser-Route/Resource
+  WebSocketApi4showDEVupdateUserRouteupdateUserIntegrationPermission37431404:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - userupdateUserFunction28537107
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*updateUser
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateUser-Route/updateUserIntegration-Permission
+  WebSocketApi4showDEVupdateUserRouteupdateUserIntegration972DB635:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - userupdateUserFunction28537107
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateUser-Route/updateUserIntegration/Resource
+  WebSocketApi4showDEVupdateUserRouteAB81B681:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: updateUser
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        updateUser: updateUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVupdateUserRouteupdateUserIntegration972DB635
+    DependsOn:
+      - Account
+      - updateUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateUser-Route/Resource
+  WebSocketApi4showDEVgetUserRoutegetUserIntegrationPermission8D441029:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - usergetUserFunction56EA507D
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*getUser
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getUser-Route/getUserIntegration-Permission
+  WebSocketApi4showDEVgetUserRoutegetUserIntegration15272EC7:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - usergetUserFunction56EA507D
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getUser-Route/getUserIntegration/Resource
+  WebSocketApi4showDEVgetUserRoute69EEFB9A:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: getUser
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        getUser: getUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVgetUserRoutegetUserIntegration15272EC7
+    DependsOn:
+      - Account
+      - getUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getUser-Route/Resource
+  WebSocketApi4showDEVaddAddressRouteaddAddressIntegrationPermission7AE8A325:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - useraddAddressFunction0990823E
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*addAddress
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAddress-Route/addAddressIntegration-Permission
+  WebSocketApi4showDEVaddAddressRouteaddAddressIntegration5A9FFC3E:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - useraddAddressFunction0990823E
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAddress-Route/addAddressIntegration/Resource
+  WebSocketApi4showDEVaddAddressRoute317B825D:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: addAddress
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        addAddress: addAddressUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVaddAddressRouteaddAddressIntegration5A9FFC3E
+    DependsOn:
+      - Account
+      - addAddressUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAddress-Route/Resource
+  WebSocketApi4showDEVupdateAddressRouteupdateAddressIntegrationPermissionCF0D59DF:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - userupdateAddressFunctionA24FE060
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*updateAddress
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAddress-Route/updateAddressIntegration-Permission
+  WebSocketApi4showDEVupdateAddressRouteupdateAddressIntegrationE8E7E3F6:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - userupdateAddressFunctionA24FE060
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAddress-Route/updateAddressIntegration/Resource
+  WebSocketApi4showDEVupdateAddressRoute3680481D:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: updateAddress
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        updateAddress: updateAddressUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVupdateAddressRouteupdateAddressIntegrationE8E7E3F6
+    DependsOn:
+      - Account
+      - updateAddressUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAddress-Route/Resource
+  WebSocketApi4showDEVgetAddressesRoutegetAddressesIntegrationPermissionB7A737B0:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - usergetAddressesFunctionE9EFF721
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*getAddresses
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getAddresses-Route/getAddressesIntegration-Permission
+  WebSocketApi4showDEVgetAddressesRoutegetAddressesIntegration41AB1F42:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - usergetAddressesFunctionE9EFF721
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getAddresses-Route/getAddressesIntegration/Resource
+  WebSocketApi4showDEVgetAddressesRouteAD2ED872:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: getAddresses
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        getAddresses: getAddressesUserModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVgetAddressesRoutegetAddressesIntegration41AB1F42
+    DependsOn:
+      - Account
+      - getAddressesUserModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/getAddresses-Route/Resource
+  WebSocketApi4showDEVlistProfilesRoutelistProfilesIntegrationPermission365E5926:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminlistProfilesFunction66407277
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*listProfiles
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfiles-Route/listProfilesIntegration-Permission
+  WebSocketApi4showDEVlistProfilesRoutelistProfilesIntegration1B9B9BE9:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminlistProfilesFunction66407277
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfiles-Route/listProfilesIntegration/Resource
+  WebSocketApi4showDEVlistProfilesRouteBAA9E1B6:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: listProfiles
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        listProfiles: listProfilesAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVlistProfilesRoutelistProfilesIntegration1B9B9BE9
+    DependsOn:
+      - Account
+      - listProfilesAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfiles-Route/Resource
+  WebSocketApi4showDEVlistPermissionsRoutelistPermissionsIntegrationPermissionCD0B64C4:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminlistPermissionsFunction287CBE36
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*listPermissions
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listPermissions-Route/listPermissionsIntegration-Permission
+  WebSocketApi4showDEVlistPermissionsRoutelistPermissionsIntegrationEC89421B:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminlistPermissionsFunction287CBE36
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listPermissions-Route/listPermissionsIntegration/Resource
+  WebSocketApi4showDEVlistPermissionsRoute0943F20A:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: listPermissions
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        listPermissions: listPermissionsAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVlistPermissionsRoutelistPermissionsIntegrationEC89421B
+    DependsOn:
+      - Account
+      - listPermissionsAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listPermissions-Route/Resource
+  WebSocketApi4showDEVmanageProfilePermissionsRoutemanageProfilePermissionsIntegrationPermission80943E63:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminmanageProfilePermissionsFunction53E6E4C6
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*manageProfilePermissions
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageProfilePermissions-Route/manageProfilePermissionsIntegration-Permission
+  WebSocketApi4showDEVmanageProfilePermissionsRoutemanageProfilePermissionsIntegration35111F0A:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminmanageProfilePermissionsFunction53E6E4C6
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageProfilePermissions-Route/manageProfilePermissionsIntegration/Resource
+  WebSocketApi4showDEVmanageProfilePermissionsRouteA7F31346:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: manageProfilePermissions
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        manageProfilePermissions: ManageProfilePermissionsAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVmanageProfilePermissionsRoutemanageProfilePermissionsIntegration35111F0A
+    DependsOn:
+      - Account
+      - ManageProfilePermissionsAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageProfilePermissions-Route/Resource
+  WebSocketApi4showDEVlistProfilePermissionsRoutelistProfilePermissionsIntegrationPermission5D950BE1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminlistProfilePermissionsFunctionB9353F88
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*listProfilePermissions
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfilePermissions-Route/listProfilePermissionsIntegration-Permission
+  WebSocketApi4showDEVlistProfilePermissionsRoutelistProfilePermissionsIntegrationD52C06F1:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminlistProfilePermissionsFunctionB9353F88
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfilePermissions-Route/listProfilePermissionsIntegration/Resource
+  WebSocketApi4showDEVlistProfilePermissionsRouteD6B8F47A:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: listProfilePermissions
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        listProfilePermissions: listProfilePermissionsAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVlistProfilePermissionsRoutelistProfilePermissionsIntegrationD52C06F1
+    DependsOn:
+      - Account
+      - listProfilePermissionsAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listProfilePermissions-Route/Resource
+  WebSocketApi4showDEVaddAccountRouteaddAccountIntegrationPermissionBBA884AF:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminaddAccountFunctionA17F5D03
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*addAccount
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAccount-Route/addAccountIntegration-Permission
+  WebSocketApi4showDEVaddAccountRouteaddAccountIntegration6AF521AF:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminaddAccountFunctionA17F5D03
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAccount-Route/addAccountIntegration/Resource
+  WebSocketApi4showDEVaddAccountRoute28547F9E:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: addAccount
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        addAccount: addAccountAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVaddAccountRouteaddAccountIntegration6AF521AF
+    DependsOn:
+      - Account
+      - addAccountAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/addAccount-Route/Resource
+  WebSocketApi4showDEVupdateAccountRouteupdateAccountIntegrationPermission32DEA2C0:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminupdateAccountFunctionC5ED0F5C
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*updateAccount
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAccount-Route/updateAccountIntegration-Permission
+  WebSocketApi4showDEVupdateAccountRouteupdateAccountIntegration3677F894:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminupdateAccountFunctionC5ED0F5C
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAccount-Route/updateAccountIntegration/Resource
+  WebSocketApi4showDEVupdateAccountRoute2810FD85:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: updateAccount
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        updateAccount: updateAccountAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVupdateAccountRouteupdateAccountIntegration3677F894
+    DependsOn:
+      - Account
+      - updateAccountAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/updateAccount-Route/Resource
+  WebSocketApi4showDEVdeleteAccountRoutedeleteAccountIntegrationPermissionE4F7EF07:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - admindeleteAccountFunctionE9A5F4DE
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*deleteAccount
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/deleteAccount-Route/deleteAccountIntegration-Permission
+  WebSocketApi4showDEVdeleteAccountRoutedeleteAccountIntegrationCD060AC0:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - admindeleteAccountFunctionE9A5F4DE
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/deleteAccount-Route/deleteAccountIntegration/Resource
+  WebSocketApi4showDEVdeleteAccountRouteF91F3E31:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: deleteAccount
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        deleteAccount: deleteAccountAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVdeleteAccountRoutedeleteAccountIntegrationCD060AC0
+    DependsOn:
+      - Account
+      - deleteAccountAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/deleteAccount-Route/Resource
+  WebSocketApi4showDEVlistAccountsRoutelistAccountsIntegrationPermissionC6D55D2C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminlistAccountsFunction471076D8
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*listAccounts
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccounts-Route/listAccountsIntegration-Permission
+  WebSocketApi4showDEVlistAccountsRoutelistAccountsIntegration644ACDC4:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminlistAccountsFunction471076D8
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccounts-Route/listAccountsIntegration/Resource
+  WebSocketApi4showDEVlistAccountsRoute2E554096:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: listAccounts
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        listAccounts: listAccountsAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVlistAccountsRoutelistAccountsIntegration644ACDC4
+    DependsOn:
+      - Account
+      - listAccountsAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccounts-Route/Resource
+  WebSocketApi4showDEVcountPagesAccountsRoutecountPagesAccountsIntegrationPermission298E1A16:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - admincountPagesAccountsFunction74AAA275
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*countPagesAccounts
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesAccounts-Route/countPagesAccountsIntegration-Permission
+  WebSocketApi4showDEVcountPagesAccountsRoutecountPagesAccountsIntegrationB65FD270:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - admincountPagesAccountsFunction74AAA275
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesAccounts-Route/countPagesAccountsIntegration/Resource
+  WebSocketApi4showDEVcountPagesAccountsRoute88038372:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: countPagesAccounts
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        countPagesAccounts: countPagesAccountsAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVcountPagesAccountsRoutecountPagesAccountsIntegrationB65FD270
+    DependsOn:
+      - Account
+      - countPagesAccountsAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesAccounts-Route/Resource
+  WebSocketApi4showDEVmanageAccountLinkedUsersRoutemanageAccountLinkedUsersIntegrationPermission579BF86B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminmanageAccountLinkedUsersFunctionE99156FF
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*manageAccountLinkedUsers
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageAccountLinkedUsers-Route/manageAccountLinkedUsersIntegration-Permission
+  WebSocketApi4showDEVmanageAccountLinkedUsersRoutemanageAccountLinkedUsersIntegrationD187D26C:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminmanageAccountLinkedUsersFunctionE99156FF
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageAccountLinkedUsers-Route/manageAccountLinkedUsersIntegration/Resource
+  WebSocketApi4showDEVmanageAccountLinkedUsersRoute96133C83:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: manageAccountLinkedUsers
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        manageAccountLinkedUsers: manageAccountLinkedUsersAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVmanageAccountLinkedUsersRoutemanageAccountLinkedUsersIntegrationD187D26C
+    DependsOn:
+      - Account
+      - manageAccountLinkedUsersAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/manageAccountLinkedUsers-Route/Resource
+  WebSocketApi4showDEVlistAccountLinkedUsersRoutelistAccountLinkedUsersIntegrationPermission6D566575:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - adminlistAccountLinkedUsersFunctionF5D69ABB
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*listAccountLinkedUsers
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccountLinkedUsers-Route/listAccountLinkedUsersIntegration-Permission
+  WebSocketApi4showDEVlistAccountLinkedUsersRoutelistAccountLinkedUsersIntegration604FD2C1:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - adminlistAccountLinkedUsersFunctionF5D69ABB
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccountLinkedUsers-Route/listAccountLinkedUsersIntegration/Resource
+  WebSocketApi4showDEVlistAccountLinkedUsersRoute27800FAE:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: listAccountLinkedUsers
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        listAccountLinkedUsers: listAccountLinkedUsersAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVlistAccountLinkedUsersRoutelistAccountLinkedUsersIntegration604FD2C1
+    DependsOn:
+      - Account
+      - listAccountLinkedUsersAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/listAccountLinkedUsers-Route/Resource
+  WebSocketApi4showDEVcountPagesUsersRoutecountPagesUsersIntegrationPermissionC3539E93:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - admincountPagesUsersFunctionBEC62427
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:us-east-1:370579816997:"
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /*/*countPagesUsers
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesUsers-Route/countPagesUsersIntegration-Permission
+  WebSocketApi4showDEVcountPagesUsersRoutecountPagesUsersIntegrationD0E55837:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - admincountPagesUsersFunctionBEC62427
+                - Arn
+            - /invocations
+    DependsOn:
+      - Account
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesUsers-Route/countPagesUsersIntegration/Resource
+  WebSocketApi4showDEVcountPagesUsersRoute9CE952A6:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      RouteKey: countPagesUsers
+      ModelSelectionExpression: $request.body.action
+      RequestModels:
+        countPagesUsers: countPagesUsersAdminModelModel
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: WebSocketApi4showDEVcountPagesUsersRoutecountPagesUsersIntegrationD0E55837
+    DependsOn:
+      - Account
+      - countPagesUsersAdminModelModel
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebSocketApi4showDEV/countPagesUsers-Route/Resource
+  GetStateModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: GetStateModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - getState
+        required:
+          - action
+        title: GetStateSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/GetStateModel
+  addUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: addUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - addUser
+          user:
+            properties:
+              nome:
+                type: string
+              email:
+                type: string
+              tipoPessoa:
+                type: string
+              cfpCnpj:
+                type: string
+              telefone:
+                type: string
+            required:
+              - nome
+              - email
+              - tipoPessoa
+              - telefone
+            type: object
+        required:
+          - action
+          - user
+        title: addUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/addUserModelModel
+  updateUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: updateUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - updateUser
+          user:
+            properties:
+              nome:
+                type: string
+              email:
+                type: string
+              tipoPessoa:
+                type: string
+              cfpCnpj:
+                type: string
+              telefone:
+                type: string
+            required:
+              - nome
+              - email
+              - tipoPessoa
+              - telefone
+            type: object
+        required:
+          - action
+          - user
+        title: updateUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/updateUserModelModel
+  getUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: getUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - getUser
+        required:
+          - action
+        title: getUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/getUserModelModel
+  addAddressUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: addAddressUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - addAddress
+          address:
+            properties:
+              nome:
+                type: string
+              logradouro:
+                type: string
+              numero:
+                type: number
+              cep:
+                type: string
+              bairro:
+                type: string
+              cidade:
+                type: string
+              complemento:
+                type: string
+              telefone:
+                type: string
+              selecionado:
+                type: boolean
+            required:
+              - nome
+              - logradouro
+              - numero
+              - cep
+              - bairro
+              - cidade
+              - telefone
+            type: object
+        required:
+          - action
+          - address
+        title: addAddressUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/addAddressUserModelModel
+  updateAddressUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: updateAddressUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - updateAddress
+          address:
+            properties:
+              idEndereco:
+                type: number
+              nome:
+                type: string
+              logradouro:
+                type: string
+              numero:
+                type: number
+              cep:
+                type: string
+              bairro:
+                type: string
+              cidade:
+                type: string
+              complemento:
+                type: string
+              telefone:
+                type: string
+              selecionado:
+                type: boolean
+            required:
+              - idEndereco
+              - nome
+              - logradouro
+              - numero
+              - cep
+              - bairro
+              - cidade
+              - telefone
+            type: object
+        required:
+          - action
+          - address
+        title: updateAddressUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/updateAddressUserModelModel
+  getAddressesUserModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: getAddressesUserModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - getAddresses
+        required:
+          - action
+        title: getAddressesUserModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/getAddressesUserModelModel
+  listProfilesAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: listProfilesAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - listProfiles
+        required:
+          - action
+        title: listProfilesAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/listProfilesAdminModelModel
+  listPermissionsAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: listPermissionsAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - listPermissions
+          filter:
+            properties:
+              nome:
+                type: string
+            type: object
+        required:
+          - action
+        title: listPermissionsAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/listPermissionsAdminModelModel
+  ManageProfilePermissionsAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: ManageProfilePermissionsAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - manageProfilePermissions
+          request:
+            properties:
+              idPerfil:
+                type: number
+              permissionsId:
+                type: array
+            required:
+              - idPerfil
+              - permissionsId
+            type: object
+        required:
+          - action
+          - request
+        title: ManageProfilePermissionsAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/ManageProfilePermissionsAdminModelModel
+  listProfilePermissionsAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: listProfilePermissionsAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - listProfilePermissions
+          idPerfil:
+            type: number
+        required:
+          - action
+          - idPerfil
+        title: listProfilePermissionsAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/listProfilePermissionsAdminModelModel
+  addAccountAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: addAccountAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - addAccount
+          account:
+            properties:
+              nome:
+                type: string
+              email:
+                type: string
+              tipoPessoa:
+                type: string
+              cfpCnpj:
+                type: string
+              telefone:
+                type: string
+              dataExpiracao:
+                type: string
+              nomeParamLive:
+                type: string
+              porcentagem4Show:
+                type: number
+              showPoweredBy:
+                type: boolean
+            required:
+              - nome
+              - email
+              - tipoPessoa
+              - cfpCnpj
+              - telefone
+              - dataExpiracao
+              - nomeParamLive
+              - porcentagem4Show
+            type: object
+        required:
+          - action
+          - account
+        title: addAccountAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/addAccountAdminModelModel
+  updateAccountAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: updateAccountAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - updateAccount
+          account:
+            properties:
+              idConta:
+                type: number
+              nome:
+                type: string
+              email:
+                type: string
+              tipoPessoa:
+                type: string
+              cfpCnpj:
+                type: string
+              telefone:
+                type: string
+              dataExpiracao:
+                type: string
+              nomeParamLive:
+                type: string
+              porcentagem4Show:
+                type: number
+              showPoweredBy:
+                type: boolean
+            required:
+              - idConta
+              - nome
+              - email
+              - tipoPessoa
+              - cfpCnpj
+              - telefone
+              - dataExpiracao
+              - nomeParamLive
+              - porcentagem4Show
+            type: object
+        required:
+          - action
+          - account
+        title: updateAccountAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/updateAccountAdminModelModel
+  deleteAccountAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: deleteAccountAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - deleteAccount
+          account:
+            type: number
+        required:
+          - action
+          - account
+        title: deleteAccountAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/deleteAccountAdminModelModel
+  listAccountsAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: listAccountsAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - listAccounts
+          filter:
+            properties:
+              nome:
+                type: string
+              email:
+                type: string
+              cfpCnpj:
+                type: string
+              nomeParamLive:
+                type: string
+            type: object
+          pagination:
+            properties:
+              page:
+                type: number
+              limit:
+                type: number
+            required:
+              - page
+              - limit
+            type: object
+        required:
+          - action
+          - pagination
+        title: listAccountsAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/listAccountsAdminModelModel
+  countPagesAccountsAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: countPagesAccountsAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - countPagesAccounts
+          limit:
+            type: number
+        required:
+          - action
+          - limit
+        title: countPagesAccountsAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/countPagesAccountsAdminModelModel
+  manageAccountLinkedUsersAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: manageAccountLinkedUsersAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - manageAccountLinkedUsers
+          request:
+            properties:
+              idConta:
+                type: number
+              bind:
+                type: array
+            required:
+              - idConta
+              - bind
+            type: object
+        required:
+          - action
+          - request
+        title: manageAccountLinkedUsersAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/manageAccountLinkedUsersAdminModelModel
+  listAccountLinkedUsersAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: listAccountLinkedUsersAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - listAccountLinkedUsers
+          idConta:
+            type: number
+        required:
+          - action
+          - idConta
+        title: listAccountLinkedUsersAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/listAccountLinkedUsersAdminModelModel
+  countPagesUsersAdminModelModel:
+    Type: AWS::ApiGatewayV2::Model
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      Name: countPagesUsersAdminModelModel
+      Schema:
+        $schema: http://json-schema.org/draft-04/schema#
+        properties:
+          action:
+            enum:
+              - countPagesUsers
+          limit:
+            type: number
+        required:
+          - action
+          - limit
+        title: countPagesUsersAdminModelSchema
+        type: object
+      ContentType: application/json
+    Metadata:
+      aws:cdk:path: 4showStackDEV/countPagesUsersAdminModelModel
+  Authorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      AuthorizerType: REQUEST
+      Name: WebSocketApiAuthorizer
+      AuthorizerUri:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+                - setupconnectionauthorizerFunctionE2E31CC5
+                - Arn
+            - /invocations
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Authorizer
+  DEVStage3CF34D28:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: WebSocketApi4showDEVD00A8EAF
+      StageName: dev
+      AccessLogSettings:
+        DestinationArn:
+          Fn::GetAtt:
+            - AccessLogs8B620ECA
+            - Arn
+        Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.routeKey $context.protocol" $context.status $context.responseLength $context.requestId
+      AutoDeploy: true
+      DefaultRouteSettings:
+        DataTraceEnabled: true
+        LoggingLevel: INFO
+        ThrottlingBurstLimit: 500
+        ThrottlingRateLimit: 1000
+    Metadata:
+      aws:cdk:path: 4showStackDEV/DEVStage/Resource
+  ExecutionLogs6FEE23C8:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Join:
+          - ""
+          - - /aws/apigateway/
+            - Ref: WebSocketApi4showDEVD00A8EAF
+            - /dev
+      RetentionInDays: 7
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/ExecutionLogs/Resource
+  AccessLogs8B620ECA:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 7
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/AccessLogs/Resource
+  CWRole7EC94C1E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: 4showStackDEV/CWRole/Resource
+  Account:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - CWRole7EC94C1E
+          - Arn
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Account
+  WebsiteBucket75C24D94:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: aws-cdk:auto-delete-objects
+          Value: "true"
+        - Key: aws-cdk:cr-owned:8b014f11
+          Value: "true"
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebsiteBucket/Resource
+  WebsiteBucketPolicyE10E3262:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: WebsiteBucket75C24D94
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092
+                  - Arn
+            Resource:
+              - Fn::GetAtt:
+                  - WebsiteBucket75C24D94
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - WebsiteBucket75C24D94
+                        - Arn
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - OriginAccessIdentityDF1E3CAC
+                  - S3CanonicalUserId
+            Resource:
+              - Fn::GetAtt:
+                  - WebsiteBucket75C24D94
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - WebsiteBucket75C24D94
+                        - Arn
+                    - /*
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - OriginAccessIdentityDF1E3CAC
+                  - S3CanonicalUserId
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - WebsiteBucket75C24D94
+                      - Arn
+                  - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebsiteBucket/Policy/Resource
+  WebsiteBucketAutoDeleteObjectsCustomResource8750E461:
+    Type: Custom::S3AutoDeleteObjects
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F
+          - Arn
+      BucketName:
+        Ref: WebsiteBucket75C24D94
+    DependsOn:
+      - WebsiteBucketPolicyE10E3262
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/WebsiteBucket/AutoDeleteObjectsCustomResource/Default
+  CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role
+  CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 483ae06ed27ef8ca76e011264d772420593a6cfe8544759c306ef3b98c9e25be.zip
+      Timeout: 900
+      MemorySize: 128
+      Handler: __entrypoint__.handler
+      Role:
+        Fn::GetAtt:
+          - CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092
+          - Arn
+      Runtime: nodejs12.x
+      Description:
+        Fn::Join:
+          - ""
+          - - "Lambda function for auto-deleting objects in "
+            - Ref: WebsiteBucket75C24D94
+            - " S3 bucket."
+    DependsOn:
+      - CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler
+      aws:asset:path: C:\4show\v2\4show-stack\node_modules\aws-cdk-lib\aws-s3\lib\auto-delete-objects-handler
+      aws:asset:property: Code
+  OriginAccessIdentityDF1E3CAC:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Allows CloudFront to reach the bucket
+    Metadata:
+      aws:cdk:path: 4showStackDEV/OriginAccessIdentity/Resource
+  Distribution830FAC52:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+          TargetOriginId: 4showStackDEVDistributionOrigin1891FCA06
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - DomainName:
+              Fn::GetAtt:
+                - WebsiteBucket75C24D94
+                - RegionalDomainName
+            Id: 4showStackDEVDistributionOrigin1891FCA06
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                  - ""
+                  - - origin-access-identity/cloudfront/
+                    - Ref: OriginAccessIdentityDF1E3CAC
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Distribution/Resource
+  DeployWebsiteAwsCliLayer17DBC421:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      Content:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 92c405c4551a308bcdd55823f8b16268bd3c38fd2a011edaaf3ed72a80f557c4.zip
+      Description: /opt/awscli/aws
+    Metadata:
+      aws:cdk:path: 4showStackDEV/DeployWebsite/AwsCliLayer/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\node_modules\aws-cdk-lib\lambda-layer-awscli\lib\layer.zip
+      aws:asset:is-bundled: false
+      aws:asset:property: Content
+  DeployWebsiteCustomResource1024MiBE7965B54:
+    Type: Custom::CDKBucketDeployment
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBB049752D
+          - Arn
+      SourceBucketNames:
+        - cdk-hnb659fds-assets-370579816997-us-east-1
+      SourceObjectKeys:
+        - 9daf56d90583d44c27a55a40dffcb15886ae54d2b7bd4b765d34b9038930a253.zip
+      DestinationBucketName:
+        Ref: WebsiteBucket75C24D94
+      Prune: false
+      DistributionId:
+        Ref: Distribution830FAC52
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/DeployWebsite/CustomResource-1024MiB/Default
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB/ServiceRole/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :s3:::cdk-hnb659fds-assets-370579816997-us-east-1
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :s3:::cdk-hnb659fds-assets-370579816997-us-east-1/*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - WebsiteBucket75C24D94
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - WebsiteBucket75C24D94
+                        - Arn
+                    - /*
+          - Action:
+              - cloudfront:GetInvalidation
+              - cloudfront:CreateInvalidation
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D
+      Roles:
+        - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB/ServiceRole/DefaultPolicy/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBB049752D:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da.zip
+      Role:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8
+          - Arn
+      Handler: index.handler
+      Layers:
+        - Ref: DeployWebsiteAwsCliLayer17DBC421
+      MemorySize: 1024
+      Runtime: python3.7
+      Timeout: 900
+    DependsOn:
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRoleDefaultPolicy0801355D
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiBServiceRole739949D8
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1024MiB/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\node_modules\aws-cdk-lib\aws-s3-deployment\lib\lambda
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  ConfigResourceCustomResourcePolicy4FAE044F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: s3:PutObject
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - WebsiteBucket75C24D94
+                      - Arn
+                  - /config.json
+        Version: "2012-10-17"
+      PolicyName: ConfigResourceCustomResourcePolicy4FAE044F
+      Roles:
+        - Ref: AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/ConfigResource/CustomResourcePolicy/Resource
+  ConfigResource426122EF:
+    Type: Custom::AWS
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - AWS679f53fac002430cb0da5b7982bd22872D164C4C
+          - Arn
+      Create:
+        Fn::Join:
+          - ""
+          - - '{"action":"putObject","parameters":{"Body":"{\"socketUrl\":\"'
+            - Fn::GetAtt:
+                - WebSocketApi4showDEVD00A8EAF
+                - ApiEndpoint
+            - \",\"stageName\":\"dev\"}","Bucket":"
+            - Ref: WebsiteBucket75C24D94
+            - '","CacheControl":"max-age=0, no-cache, no-store, must-revalidate","ContentType":"application/json","Key":"config.json"},"physicalResourceId":{"id":"config"},"service":"S3"}'
+      Update:
+        Fn::Join:
+          - ""
+          - - '{"action":"putObject","parameters":{"Body":"{\"socketUrl\":\"'
+            - Fn::GetAtt:
+                - WebSocketApi4showDEVD00A8EAF
+                - ApiEndpoint
+            - \",\"stageName\":\"dev\"}","Bucket":"
+            - Ref: WebsiteBucket75C24D94
+            - '","CacheControl":"max-age=0, no-cache, no-store, must-revalidate","ContentType":"application/json","Key":"config.json"},"physicalResourceId":{"id":"config"},"service":"S3"}'
+      InstallLatestAwsSdk: true
+    DependsOn:
+      - ConfigResourceCustomResourcePolicy4FAE044F
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/ConfigResource/Resource/Default
+  AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: 4showStackDEV/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource
+  AWS679f53fac002430cb0da5b7982bd22872D164C4C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-370579816997-us-east-1
+        S3Key: 39381d2c8b8ec42679de4960c24f0c83c56772cdc2b10b6fc14cd0a99aba42ed.zip
+      Role:
+        Fn::GetAtt:
+          - AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+          - Arn
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 120
+    DependsOn:
+      - AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/AWS679f53fac002430cb0da5b7982bd2287/Resource
+      aws:asset:path: C:\4show\v2\4show-stack\node_modules\aws-cdk-lib\custom-resources\lib\aws-custom-resource\runtime
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  Stack4showTableDEVE51EAC4A:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: Stack4showTableDEV
+      TimeToLiveSpecification:
+        AttributeName: exp
+        Enabled: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showTableDEV/Resource
+  devF7B884FF:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: "Generated by the CDK for stack: 4show-stack-dev"
+      GenerateSecretString: {}
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/dev/Resource
+  Stack4showVPCdevB3350D88:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/Resource
+  Stack4showVPCdevPublicSubnet1Subnet16805C75:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.0.0/19
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/Subnet
+  Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/RouteTable
+  Stack4showVPCdevPublicSubnet1RouteTableAssociationE3048979:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C
+      SubnetId:
+        Ref: Stack4showVPCdevPublicSubnet1Subnet16805C75
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/RouteTableAssociation
+  Stack4showVPCdevPublicSubnet1DefaultRoute6873F953:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet1RouteTable6CDFA71C
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: Stack4showVPCdevIGW921FDFC2
+    DependsOn:
+      - Stack4showVPCdevVPCGW61557925
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/DefaultRoute
+  Stack4showVPCdevPublicSubnet1EIPC6092CA1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/EIP
+  Stack4showVPCdevPublicSubnet1NATGateway7B76FC98:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId:
+        Ref: Stack4showVPCdevPublicSubnet1Subnet16805C75
+      AllocationId:
+        Fn::GetAtt:
+          - Stack4showVPCdevPublicSubnet1EIPC6092CA1
+          - AllocationId
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet1/NATGateway
+  Stack4showVPCdevPublicSubnet2SubnetF1D03DFA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.32.0/19
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet2/Subnet
+  Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet2/RouteTable
+  Stack4showVPCdevPublicSubnet2RouteTableAssociationEB7227BF:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7
+      SubnetId:
+        Ref: Stack4showVPCdevPublicSubnet2SubnetF1D03DFA
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet2/RouteTableAssociation
+  Stack4showVPCdevPublicSubnet2DefaultRoute6510D5DD:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet2RouteTable47DFD4E7
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: Stack4showVPCdevIGW921FDFC2
+    DependsOn:
+      - Stack4showVPCdevVPCGW61557925
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet2/DefaultRoute
+  Stack4showVPCdevPublicSubnet3Subnet5A14E65C:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1c
+      CidrBlock: 10.0.64.0/19
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet3
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet3/Subnet
+  Stack4showVPCdevPublicSubnet3RouteTableEBB3D228:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PublicSubnet3
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet3/RouteTable
+  Stack4showVPCdevPublicSubnet3RouteTableAssociationF4930C52:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet3RouteTableEBB3D228
+      SubnetId:
+        Ref: Stack4showVPCdevPublicSubnet3Subnet5A14E65C
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet3/RouteTableAssociation
+  Stack4showVPCdevPublicSubnet3DefaultRouteF63FC35F:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPublicSubnet3RouteTableEBB3D228
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: Stack4showVPCdevIGW921FDFC2
+    DependsOn:
+      - Stack4showVPCdevVPCGW61557925
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PublicSubnet3/DefaultRoute
+  Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.96.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1/Subnet
+  Stack4showVPCdevPrivateSubnet1RouteTable338B39E6:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1/RouteTable
+  Stack4showVPCdevPrivateSubnet1RouteTableAssociationD947205D:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet1RouteTable338B39E6
+      SubnetId:
+        Ref: Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1/RouteTableAssociation
+  Stack4showVPCdevPrivateSubnet1DefaultRoute703B12D1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet1RouteTable338B39E6
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: Stack4showVPCdevPublicSubnet1NATGateway7B76FC98
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet1/DefaultRoute
+  Stack4showVPCdevPrivateSubnet2SubnetE83F9285:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.128.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2/Subnet
+  Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2/RouteTable
+  Stack4showVPCdevPrivateSubnet2RouteTableAssociation48E19415:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2
+      SubnetId:
+        Ref: Stack4showVPCdevPrivateSubnet2SubnetE83F9285
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2/RouteTableAssociation
+  Stack4showVPCdevPrivateSubnet2DefaultRouteB3E34412:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet2RouteTableBFEE83D2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: Stack4showVPCdevPublicSubnet1NATGateway7B76FC98
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet2/DefaultRoute
+  Stack4showVPCdevPrivateSubnet3Subnet95E9203E:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      AvailabilityZone: us-east-1c
+      CidrBlock: 10.0.160.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3/Subnet
+  Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3/RouteTable
+  Stack4showVPCdevPrivateSubnet3RouteTableAssociation7397CD90:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB
+      SubnetId:
+        Ref: Stack4showVPCdevPrivateSubnet3Subnet95E9203E
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3/RouteTableAssociation
+  Stack4showVPCdevPrivateSubnet3DefaultRoute3515D1D6:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: Stack4showVPCdevPrivateSubnet3RouteTable63A4AAEB
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: Stack4showVPCdevPublicSubnet1NATGateway7B76FC98
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/PrivateSubnet3/DefaultRoute
+  Stack4showVPCdevIGW921FDFC2:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: 4showStackDEV/Stack4showVPCdev
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/IGW
+  Stack4showVPCdevVPCGW61557925:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+      InternetGatewayId:
+        Ref: Stack4showVPCdevIGW921FDFC2
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Stack4showVPCdev/VPCGW
+  Bastion4showdevInstanceSecurityGroupA6EFB002:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 4showStackDEV/Bastion4showdev/Resource/InstanceSecurityGroup
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      Tags:
+        - Key: Name
+          Value: bastion-host-4show-dev
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Bastion4showdev/Resource/InstanceSecurityGroup/Resource
+  Bastion4showdevInstanceRole4432A549:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: "2012-10-17"
+      Tags:
+        - Key: Name
+          Value: bastion-host-4show-dev
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Bastion4showdev/Resource/InstanceRole/Resource
+  Bastion4showdevInstanceRoleDefaultPolicy1C167C0F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ssmmessages:*
+              - ssm:UpdateInstanceInformation
+              - ec2messages:*
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: Bastion4showdevInstanceRoleDefaultPolicy1C167C0F
+      Roles:
+        - Ref: Bastion4showdevInstanceRole4432A549
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Bastion4showdev/Resource/InstanceRole/DefaultPolicy/Resource
+  Bastion4showdevInstanceProfile0697EEF5:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: Bastion4showdevInstanceRole4432A549
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Bastion4showdev/Resource/InstanceProfile
+  Bastion4showdevFCCB4240:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1a
+      IamInstanceProfile:
+        Ref: Bastion4showdevInstanceProfile0697EEF5
+      ImageId:
+        Ref: SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter
+      InstanceType: t3.nano
+      SecurityGroupIds:
+        - Fn::GetAtt:
+            - Bastion4showdevInstanceSecurityGroupA6EFB002
+            - GroupId
+      SubnetId:
+        Ref: Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2
+      Tags:
+        - Key: Name
+          Value: bastion-host-4show-dev
+      UserData:
+        Fn::Base64: "#!/bin/bash"
+    DependsOn:
+      - Bastion4showdevInstanceRoleDefaultPolicy1C167C0F
+      - Bastion4showdevInstanceRole4432A549
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Bastion4showdev/Resource/Resource
+  AuroraServerlessSubnetsE15BACD9:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnets for Aurora-Serverless database
+      SubnetIds:
+        - Ref: Stack4showVPCdevPrivateSubnet1Subnet7DBF50C2
+        - Ref: Stack4showVPCdevPrivateSubnet2SubnetE83F9285
+        - Ref: Stack4showVPCdevPrivateSubnet3Subnet95E9203E
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/Subnets/Default
+  AuroraServerlessSecurityGroupF548A982:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: RDS security group
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: Stack4showVPCdevB3350D88
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/SecurityGroup/Resource
+  AuroraServerlessSecurityGroupfrom4showStackDEVBastion4showdevInstanceSecurityGroup513FFA69IndirectPort5316D427:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      Description: Bastion host connection
+      FromPort:
+        Fn::GetAtt:
+          - AuroraServerless1D6F3053
+          - Endpoint.Port
+      GroupId:
+        Fn::GetAtt:
+          - AuroraServerlessSecurityGroupF548A982
+          - GroupId
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - Bastion4showdevInstanceSecurityGroupA6EFB002
+          - GroupId
+      ToPort:
+        Fn::GetAtt:
+          - AuroraServerless1D6F3053
+          - Endpoint.Port
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/SecurityGroup/from 4showStackDEVBastion4showdevInstanceSecurityGroup513FFA69:{IndirectPort}
+  4showStackDEVAuroraServerlessSecret76258D663fdaad7efa858a3daf9490cf0a702aeb:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description:
+        Fn::Join:
+          - ""
+          - - "Generated by the CDK for stack: "
+            - Ref: AWS::StackName
+      GenerateSecretString:
+        ExcludeCharacters: " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
+        GenerateStringKey: password
+        PasswordLength: 30
+        SecretStringTemplate: '{"username":"serverless"}'
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/Secret/Resource
+  AuroraServerlessSecretAttachment2F9C7D0C:
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Properties:
+      SecretId:
+        Ref: 4showStackDEVAuroraServerlessSecret76258D663fdaad7efa858a3daf9490cf0a702aeb
+      TargetId:
+        Ref: AuroraServerless1D6F3053
+      TargetType: AWS::RDS::DBCluster
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/Secret/Attachment/Resource
+  AuroraServerless1D6F3053:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-postgresql
+      DatabaseName: dev
+      DBClusterParameterGroupName: default.aurora-postgresql10
+      DBSubnetGroupName:
+        Ref: AuroraServerlessSubnetsE15BACD9
+      EnableHttpEndpoint: true
+      EngineMode: serverless
+      MasterUsername: serverless
+      MasterUserPassword:
+        Fn::Join:
+          - ""
+          - - "{{resolve:secretsmanager:"
+            - Ref: 4showStackDEVAuroraServerlessSecret76258D663fdaad7efa858a3daf9490cf0a702aeb
+            - :SecretString:password::}}
+      ScalingConfiguration:
+        AutoPause: false
+      StorageEncrypted: true
+      VpcSecurityGroupIds:
+        - Fn::GetAtt:
+            - AuroraServerlessSecurityGroupF548A982
+            - GroupId
+    UpdateReplacePolicy: Snapshot
+    DeletionPolicy: Snapshot
+    Metadata:
+      aws:cdk:path: 4showStackDEV/Aurora-Serverless/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/21U227bMAz9lr0r6g3Y83JZuwBdayRd9xjIMuuqlaWAktJlhv99lOTYbrsnXkSRR4ekLnl7ec7Pv4g3N5PV60yrkrdbL+QrI9eu1aIpK7EztoIXx++SuA5GemUNU6Lh7cZqYMsnk2RhtZLHaI7a2jgvjIQC7ZPS0DF3tWuFc+Adn0fBKthre2zAeL4I8hX8anDEaN5m70I4YFmNeXsti7Hc1O5Yxs9bOhhgR3SAjXKut27FEfARMNlbZWoN3o7xJ6Vj0tZGecvbXw6wsFbH2ye9Y2KvauHhTRwPl6nkfK8yAx5qFKfiGxt8ouwn0ZlSzIN/tqj+AkaL6K+JJm1rx9tbW9+gDfuEs9enlXi8LqUNxjOpbaie0BKP7T2qWsUTcG5dEZPKJ3qWMeY6xvw3YqWcR1WGE9ap3bHqaERjKxqRB1HmtieFugQSqaGNMIQdaYSSnV6TtSweBNbg554G7Dm2dwz4eNIxkETi417GmMdiyYpQUk+3oTR94kFLhA6Isn/00YxZqT6z/31dRHEn/E2mkhWoDqSOiWPjkPRTQEbSW5NX0GTG9D+s87fKhD/sNPPx2QGJ2KGHnxxD6MfDtamRWtMxrFwkFA+AmhxLHRzBYhnmkGe1mDpWwouS9mXsw2rRX+w6ltYujhnNOluS1zYbcDZghjHq745ogQ+qosr9p6Dj2uzom5Ba8fkbAVNpk5hM13bY33Pp8H2Vabn74PchYSwEigYiRnbBz2dC758FfU7f+t/pLMrpkvUR7W8otzaufVy4wcidHszpFg7OvGsdix8cf3Fnh4uv/IpKvjilZkhLpRrgmyz/Aa6U5gksBQAA
+    Metadata:
+      aws:cdk:path: 4showStackDEV/CDKMetadata/Default
+Outputs:
+  Bastion4showdevBastionHostId576F7FE4:
+    Description: Instance ID of the bastion host. Use this to connect via SSM Session Manager
+    Value:
+      Ref: Bastion4showdevFCCB4240
+  webUrl:
+    Value:
+      Fn::GetAtt:
+        - Distribution830FAC52
+        - DomainName
+  wsUrl:
+    Value:
+      Fn::Join:
+        - ""
+        - - Fn::GetAtt:
+              - WebSocketApi4showDEVD00A8EAF
+              - ApiEndpoint
+          - /dev
+Parameters:
+  SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+

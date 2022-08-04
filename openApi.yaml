@@ -1,0 +1,295 @@
+openapi: "3.0.2"
+info:
+  title: 4SHOWV2
+  description: "4SHOWV2 API"
+  version: "2.0"
+  contact:
+    name: "4SHOWV2 API"
+    url: "http://4show.com"
+    email: "4show@paipe.co"
+
+servers:
+  - url: "http://4show.com/prod"
+    description: "Production Server"
+  - url: "http://4show.com/dev"
+    description: "Development Server"
+  - url: "http://4show.com/hml"
+    description: "Homolog Server"
+
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create a new user
+      description: Create a new user
+      operationId: addUser
+      requestBody:
+        description: Create a new user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Error
+
+    get:
+      tags:
+        - user
+      summary: Get all Users
+      description: Get all Users
+      operationId: getUsers
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "400":
+          description: Error
+
+  /user/{userId}:
+    put:
+      tags:
+        - user
+      summary: Update an existing User
+      description: Update an existing User
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an User
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Error
+
+  /user/address:
+    post:
+      tags:
+        - user
+      summary: Register a new Address
+      description: Register a new Address
+      operationId: addAddress
+      requestBody:
+        description: Register a new Address
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Address"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "400":
+          description: Error
+
+    get:
+      tags:
+        - user
+      summary: Get all Addresses
+      description: Get all Addresses
+      operationId: getAddress
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Address"
+        "400":
+          description: Error
+
+  /user/address/{addressId}:
+    put:
+      tags:
+        - user
+      summary: Update an existing Address
+      description: Update an existing Address
+      operationId: updateAddress
+      parameters:
+        - name: addressId
+          in: path
+          description: ID of the address
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an Address
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Address"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "400":
+          description: Error
+
+  /admin:
+    post:
+      tags:
+        - user
+      summary: Create an admin
+      description: Create an admin
+      operationId: createAdmin
+      requestBody:
+        description: Create an admin
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Admin"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+        "400":
+          description: Error
+components:
+  schemas:
+    User:
+      required:
+        - nome
+        - email
+        - tipoPessoa
+        - cpfCnpj
+        - telefone
+      type: object
+      properties:
+        nome:
+          type: string
+          example: ravel
+        email:
+          type: string
+          example: ravel.dias@paipe.co
+        tipoPessoa:
+          type: string
+          enum:
+            - fisico
+            - juridico
+          example: fisico
+        cpfCnpj:
+          type: string
+          example: 1234567890001
+        telefone:
+          type: string
+          example: 51982462459
+    Address:
+      required:
+        - nome
+        - logradouro
+        - numero
+        - cep
+        - bairro
+        - cidade
+        - telefone
+        - selecionado
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Meu endereco
+        logradouro:
+          type: string
+          example: Rua dos Andradas
+        numero:
+          type: number
+          example: 455
+        cep:
+          type: string
+          example: 93544-320
+        bairro:
+          type: string
+          example: Rio Branco
+        cidade:
+          type: string
+          example: Campo Bom
+        telefone:
+          type: string
+          example: 51 995358255
+        selecionado:
+          type: boolean
+          example: true
+
+    Admin:
+      required:
+        - nome
+        - email
+        - tipoPessoa
+        - cpfCnpj
+        - telefone
+        - dataExpiracao
+        - nomeParamLive
+        - porcentagem4Show
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Thomas
+        email:
+          type: string
+          example: thomas@paipe.co
+        tipoPessoa:
+          type: string
+          enum:
+            - fisico
+            - juridico
+        cpfCnpj:
+          type: string
+          example: 989012890112
+        telefone:
+          type: string
+          example: 51989441671
+        dataExpiracao:
+          type: string
+          format: date
+          example: 2022-06-30 14:16:21.931417
+        nomeParamLive:
+          type: string
+          example: teste
+        porcentagem4Show:
+          type: number
+          example: 99.9

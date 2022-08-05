@@ -144,6 +144,7 @@ paths:
         - name: addressId
           in: path
           description: ID of the address
+          example: 2
           required: true
           schema:
             type: integer
@@ -168,12 +169,70 @@ paths:
   /admin:
     post:
       tags:
-        - user
+        - admin
       summary: Create an admin
       description: Create an admin
       operationId: createAdmin
       requestBody:
         description: Create an admin
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Admin"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+        "400":
+          description: Error
+
+  /admin/{adminId}:
+    delete:
+      tags:
+        - admin
+      summary: Delete an Admin
+      description: Delete an Admin By Id
+      operationId: deleteAdmin
+      parameters:
+        - name: adminId
+          in: path
+          description: Id of the admin
+          example: 1
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+        "400":
+          description: Error
+
+    put:
+      tags:
+        - admin
+      summary: Update an Admin
+      description: Update an Admin By Id
+      operationId: updateAdmin
+      parameters:
+        - name: adminId
+          in: path
+          description: Id of the admin
+          example: 3
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an Admin by Id
         content:
           application/json:
             schema:

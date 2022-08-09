@@ -1,46 +1,48 @@
-openapi: "3.0.2"
+openapi: '3.0.2'
 info:
   title: 4SHOWV2
-  description: "4SHOWV2 API"
-  version: "2.0"
+  description: '4SHOWV2 API'
+  version: '2.0'
   contact:
-    name: "4SHOWV2 API"
-    url: "http://4show.com"
-    email: "4show@paipe.co"
-
+    name: '4SHOWV2 API'
+    url: 'http://4show.com'
+    email: '4show@paipe.co'
+    
 servers:
-  - url: "http://4show.com/prod"
-    description: "Production Server"
-  - url: "http://4show.com/dev"
-    description: "Development Server"
-  - url: "http://4show.com/hml"
-    description: "Homolog Server"
-
+- url: 'http://4show.com/prod'
+  description: 'Production Server'
+- url: 'http://4show.com/dev'
+  description: 'Development Server'
+- url: 'http://4show.com/hml'
+  description: 'Homolog Server'
+  
 paths:
   /user:
     post:
+      security:
+        - bearerAuth: []
       tags:
-        - user
+      - user
       summary: Create a new user
-      description: Create a new user
+      description: "Action: addUser" 
       operationId: addUser
       requestBody:
         description: Create a new user
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
         required: true
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "400":
+                $ref: '#/components/schemas/User'        
+        '400':
           description: Error
-
+          
     get:
       tags:
         - user
@@ -48,21 +50,21 @@ paths:
       description: Get all Users
       operationId: getUsers
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
-        "400":
+                  $ref: '#/components/schemas/User'          
+        '400':
           description: Error
-
+  
   /user/{userId}:
-    put:
+    put:   
       tags:
-        - user
+      - user
       summary: Update an existing User
       description: Update an existing User
       operationId: updateUser
@@ -79,22 +81,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
         required: true
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "400":
+                $ref: '#/components/schemas/User'        
+        '400':
           description: Error
-
+          
   /user/address:
     post:
       tags:
-        - user
+      - user
       summary: Register a new Address
       description: Register a new Address
       operationId: addAddress
@@ -103,18 +105,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Address"
+              $ref: '#/components/schemas/Address'
         required: true
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Address"
-        "400":
+                $ref: '#/components/schemas/Address'        
+        '400':
           description: Error
-
+          
     get:
       tags:
         - user
@@ -122,21 +124,21 @@ paths:
       description: Get all Addresses
       operationId: getAddress
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Address"
-        "400":
+                  $ref: '#/components/schemas/Address'          
+        '400':
           description: Error
-
+       
   /user/address/{addressId}:
-    put:
+    put:   
       tags:
-        - user
+      - user
       summary: Update an existing Address
       description: Update an existing Address
       operationId: updateAddress
@@ -154,47 +156,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Address"
+              $ref: '#/components/schemas/Address'
         required: true
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Address"
-        "400":
+                $ref: '#/components/schemas/Address' 
+        '400':
           description: Error
-
-  /admin:
-    post:
-      tags:
-        - admin
-      summary: Create an admin
-      description: Create an admin
-      operationId: createAdmin
-      requestBody:
-        description: Create an admin
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Admin"
-        required: true
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Admin"
-        "400":
-          description: Error
-
-  /admin/{adminId}:
+  
+  /admin/{adminId}:        
     delete:
       tags:
-        - admin
-      summary: Delete an Admin
+      - admin
+      summary: Delete an Admin  
       description: Delete an Admin By Id
       operationId: deleteAdmin
       parameters:
@@ -207,75 +185,98 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Admin"
-        "400":
+                $ref: '#/components/schemas/Admin'
+        '400':
           description: Error
-
-    put:
+          
+  /admin:
+    post:
       tags:
-        - admin
-      summary: Update an Admin
-      description: Update an Admin By Id
-      operationId: updateAdmin
-      parameters:
-        - name: adminId
-          in: path
-          description: Id of the admin
-          example: 3
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - admin
+      summary: Create an admin
+      description: Create an admin
+      operationId: createAdmin
       requestBody:
-        description: Update an Admin by Id
+        description: Create an admin
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Admin"
+              $ref: '#/components/schemas/Admin'
         required: true
       responses:
-        "200":
+        '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Admin"
-        "400":
+                $ref: '#/components/schemas/Admin'
+        '400':
           description: Error
+    get:
+      tags:
+        - admin
+      summary: Get all Admins
+      description: Get all Admins
+      operationId: getAdmins
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Admin'          
+        '400':
+          description: Error
+             
+          
+          
 components:
+  securitySchemes:
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  
   schemas:
     User:
       required:
-        - nome
-        - email
-        - tipoPessoa
-        - cpfCnpj
-        - telefone
+       - nome
+       - email
+       - tipoPessoa
+       - cpfCnpj
+       - telefone
       type: object
       properties:
-        nome:
-          type: string
-          example: ravel
-        email:
-          type: string
-          example: ravel.dias@paipe.co
-        tipoPessoa:
-          type: string
-          enum:
-            - fisico
-            - juridico
-          example: fisico
-        cpfCnpj:
-          type: string
-          example: 1234567890001
-        telefone:
-          type: string
-          example: 51982462459
+       nome:
+        type: string
+        example: ravel
+        maxLength: 40
+       email:
+        type: string
+        example: ravel.dias@paipe.co
+        maxLength: 40
+       tipoPessoa:
+        type: string
+        enum:
+         - fisico
+         - juridico
+        example: fisico
+       cpfCnpj:
+        type: string
+        example: 1234567890001
+        minLength: 14
+        maxLength: 18
+       telefone:
+        type: string
+        example: 51982462459
+        minLength: 11
+        maxLength: 13
     Address:
       required:
         - nome
@@ -312,7 +313,7 @@ components:
         selecionado:
           type: boolean
           example: true
-
+    
     Admin:
       required:
         - nome
@@ -352,3 +353,4 @@ components:
         porcentagem4Show:
           type: number
           example: 99.9
+        
